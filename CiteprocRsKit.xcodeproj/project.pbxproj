@@ -1,0 +1,571 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		851A4944260AD10B00AD1322 /* CiteprocRsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */; };
+		851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */; };
+		851A4955260AD12300AD1322 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4954260AD12300AD1322 /* API.swift */; };
+		85A2F49E260AFE7E00B8DCE6 /* Modules in Resources */ = {isa = PBXBuildFile; fileRef = 85A2F49D260AFE7E00B8DCE6 /* Modules */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		851A4945260AD10B00AD1322 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 850B71D026085A0200EB37D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 851A493A260AD10B00AD1322;
+			remoteInfo = CiteprocRsKit;
+		};
+		85A2F41E260AE1DC00B8DCE6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 850B71D026085A0200EB37D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 85A2F410260AE08400B8DCE6;
+			remoteInfo = "cargo-build-x";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CiteprocRsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiteprocRsKitTests.swift; sourceTree = "<group>"; };
+		851A494A260AD10B00AD1322 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		851A4954260AD12300AD1322 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CiteprocRsKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		851A495F260AD3EE00AD1322 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		856B441926086D410088EBFC /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
+		85A2F49D260AFE7E00B8DCE6 /* Modules */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Modules; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		851A4938260AD10B00AD1322 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		851A4940260AD10B00AD1322 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				851A4944260AD10B00AD1322 /* CiteprocRsKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		850B71CF26085A0200EB37D0 = {
+			isa = PBXGroup;
+			children = (
+				856B441926086D410088EBFC /* Scripts */,
+				851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */,
+				851A493C260AD10B00AD1322 /* CiteprocRsKit */,
+				851A4947260AD10B00AD1322 /* CiteprocRsKitTests */,
+				851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */,
+			);
+			sourceTree = "<group>";
+		};
+		851A493C260AD10B00AD1322 /* CiteprocRsKit */ = {
+			isa = PBXGroup;
+			children = (
+				85A2F49D260AFE7E00B8DCE6 /* Modules */,
+				851A495F260AD3EE00AD1322 /* Info.plist */,
+				851A4954260AD12300AD1322 /* API.swift */,
+			);
+			path = CiteprocRsKit;
+			sourceTree = "<group>";
+		};
+		851A4947260AD10B00AD1322 /* CiteprocRsKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */,
+				851A494A260AD10B00AD1322 /* Info.plist */,
+			);
+			path = CiteprocRsKitTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		851A4936260AD10B00AD1322 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXLegacyTarget section */
+		85A2F410260AE08400B8DCE6 /* libciteproc_rs.a */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "bash \"$PROJECT_DIR/Scripts/cargo-build\"";
+			buildConfigurationList = 85A2F411260AE08400B8DCE6 /* Build configuration list for PBXLegacyTarget "libciteproc_rs.a" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/env;
+			buildWorkingDirectory = $PROJECT_DIR;
+			dependencies = (
+			);
+			name = libciteproc_rs.a;
+			passBuildSettingsInEnvironment = 1;
+			productName = "cargo-build-x";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		851A493A260AD10B00AD1322 /* CiteprocRsKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 851A494C260AD10B00AD1322 /* Build configuration list for PBXNativeTarget "CiteprocRsKit" */;
+			buildPhases = (
+				851A4936260AD10B00AD1322 /* Headers */,
+				851A4937260AD10B00AD1322 /* Sources */,
+				851A4938260AD10B00AD1322 /* Frameworks */,
+				851A4939260AD10B00AD1322 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				85A2F41F260AE1DC00B8DCE6 /* PBXTargetDependency */,
+			);
+			name = CiteprocRsKit;
+			productName = CiteprocRsKit;
+			productReference = 851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		851A4942260AD10B00AD1322 /* CiteprocRsKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 851A494F260AD10B00AD1322 /* Build configuration list for PBXNativeTarget "CiteprocRsKitTests" */;
+			buildPhases = (
+				851A493F260AD10B00AD1322 /* Sources */,
+				851A4940260AD10B00AD1322 /* Frameworks */,
+				851A4941260AD10B00AD1322 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				851A4946260AD10B00AD1322 /* PBXTargetDependency */,
+			);
+			name = CiteprocRsKitTests;
+			productName = CiteprocRsKitTests;
+			productReference = 851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		850B71D026085A0200EB37D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					851A493A260AD10B00AD1322 = {
+						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
+					};
+					851A4942260AD10B00AD1322 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					85A2F410260AE08400B8DCE6 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = 850B71D326085A0200EB37D0 /* Build configuration list for PBXProject "CiteprocRsKit" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 850B71CF26085A0200EB37D0;
+			productRefGroup = 850B71CF26085A0200EB37D0;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				851A493A260AD10B00AD1322 /* CiteprocRsKit */,
+				851A4942260AD10B00AD1322 /* CiteprocRsKitTests */,
+				85A2F410260AE08400B8DCE6 /* libciteproc_rs.a */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		851A4939260AD10B00AD1322 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85A2F49E260AFE7E00B8DCE6 /* Modules in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		851A4941260AD10B00AD1322 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		851A4937260AD10B00AD1322 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				851A4955260AD12300AD1322 /* API.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		851A493F260AD10B00AD1322 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		851A4946260AD10B00AD1322 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 851A493A260AD10B00AD1322 /* CiteprocRsKit */;
+			targetProxy = 851A4945260AD10B00AD1322 /* PBXContainerItemProxy */;
+		};
+		85A2F41F260AE1DC00B8DCE6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 85A2F410260AE08400B8DCE6 /* libciteproc_rs.a */;
+			targetProxy = 85A2F41E260AE1DC00B8DCE6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		850B71DD26085A0200EB37D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		850B71DE26085A0200EB37D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		851A494D260AD10B00AD1322 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = CiteprocRsKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MODULEMAP_PRIVATE_FILE = "";
+				OTHER_LDFLAGS = "-lciteproc_rs";
+				PRODUCT_BUNDLE_IDENTIFIER = net.cormacrelf.CiteprocRsKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_INCLUDE_PATHS = CiteprocRsKit/Modules;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				USER_HEADER_SEARCH_PATHS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Debug;
+		};
+		851A494E260AD10B00AD1322 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = CiteprocRsKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MODULEMAP_PRIVATE_FILE = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lciteproc_rs";
+				PRODUCT_BUNDLE_IDENTIFIER = net.cormacrelf.CiteprocRsKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SWIFT_INCLUDE_PATHS = CiteprocRsKit/Modules;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+				USER_HEADER_SEARCH_PATHS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Release;
+		};
+		851A4950260AD10B00AD1322 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = CiteprocRsKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.cormacrelf.CiteprocRsKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		851A4951260AD10B00AD1322 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = CiteprocRsKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.cormacrelf.CiteprocRsKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		85A2F412260AE08400B8DCE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		85A2F413260AE08400B8DCE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		850B71D326085A0200EB37D0 /* Build configuration list for PBXProject "CiteprocRsKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				850B71DD26085A0200EB37D0 /* Debug */,
+				850B71DE26085A0200EB37D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		851A494C260AD10B00AD1322 /* Build configuration list for PBXNativeTarget "CiteprocRsKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				851A494D260AD10B00AD1322 /* Debug */,
+				851A494E260AD10B00AD1322 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		851A494F260AD10B00AD1322 /* Build configuration list for PBXNativeTarget "CiteprocRsKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				851A4950260AD10B00AD1322 /* Debug */,
+				851A4951260AD10B00AD1322 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85A2F411260AE08400B8DCE6 /* Build configuration list for PBXLegacyTarget "libciteproc_rs.a" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85A2F412260AE08400B8DCE6 /* Debug */,
+				85A2F413260AE08400B8DCE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 850B71D026085A0200EB37D0 /* Project object */;
+}
