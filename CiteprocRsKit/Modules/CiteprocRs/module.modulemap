@@ -1,0 +1,4 @@
+module CiteprocRs {
+    header "../../../citeproc-rs/bindings/ffi/include/citeproc_rs.h"
+    export *
+}

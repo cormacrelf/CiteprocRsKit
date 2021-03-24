@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+# The $PATH used by Xcode likely won't contain Cargo, fix that.
+# This assumes a default `rustup` setup.
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# https://github.com/TimNN/cargo-lipo/issues/41#issuecomment-774793892
+if [[ -n "${DEVELOPER_SDK_DIR:-}" ]]; then
+  # Assume we're in Xcode, which means we're probably cross-compiling.
+  # In this case, we need to add an extra library search path for build scripts and proc-macros,
+  # which run on the host instead of the target.
+  # (macOS Big Sur does not have linkable libraries in /usr/lib/.)
+  export LIBRARY_PATH="${DEVELOPER_SDK_DIR}/MacOSX.sdk/usr/lib:${LIBRARY_PATH:-}"
+fi
+
+CONFIG="debug"
+if [[ "$CONFIGURATION" == "Release" ]]; then CONFIG="release"; fi
+IF_RELEASE=""
+if [[ "$CONFIGURATION" == "Release" ]]; then IF_RELEASE="--release"; fi
+
+if ! command -v cargo-lipo &> /dev/null
+then
+  echo "error: cargo-lipo not installed. Please run: cargo install --force cargo-lipo" > /dev/stderr
+  exit 1
+fi
+
+# hmm
+
+RUST="${PROJECT_DIR}/citeproc-rs"
+
+xcode_to_cargo_target() {
+  local XCODE_ARCH="$1"
+  local XCODE_TARGET="$2"
+  case "$XCODE_ARCH" in
+    armv7) CARGO_ARCH="armv7" ;;
+    arm64) CARGO_ARCH="aarch64" ;;
+    i386) CARGO_ARCH="i386" ;;
+    x86_64) CARGO_ARCH="x86_64" ;;
+    *) echo "error: unsupported xcode arch name $XCODE_ARCH" > /dev/stderr && exit 1
+      ;;
+  esac
+  case "$XCODE_TARGET" in
+    macosx) CARGO_TARGET="apple-darwin" ;;
+    *) CARGO_TARGET="apple-ios" ;;
+  esac
+  printf "$CARGO_ARCH-$CARGO_TARGET"
+}
+targets_from_env() {
+  if [[ -z "$ARCHS" ]]; then echo "ARCHS env var empty"; exit 1; fi
+  local IFS=" "
+  read -ra xcode_archs <<< "$ARCHS"
+  for a in "${xcode_archs[@]}"; do
+    cd "$PROJECT_DIR/citeproc-rs" && cargo build -p citeproc-ffi $IF_RELEASE --target
+  done
+}
+
+env > /dev/stderr
+# todo:
+# ARCHS (arm64)
+# ARCHS_STANDARD (arm64 x86_64)
+
+# xcode doesn't set this for external build tools
+if [[ -z "$ACTION" ]]; then export ACTION=build; fi
+
+# this could well be only one architecture, but lipo is good at reading xcode's env vars and translating into cargo.
+cd "$PROJECT_DIR/citeproc-rs" && cargo lipo --xcode-integ -p citeproc-ffi
+mkdir -p "$PROJECT_DIR/Resources/$PLATFORM_NAME"
+cp "$RUST/target/universal/$CONFIG/libciteproc_rs.a" "$PROJECT_DIR/Resources/$PLATFORM_NAME"
+
+FRAMEWORK_NAME=CiteprocRs.framework
+
+# echo $BUILT_PRODUCTS_DIR
+# cp "$RUST/target/universal/$CONFIG/libciteproc_rs.a" "$BUILT_PRODUCTS_DIR"
+# cp "$RUST/target/universal/$CONFIG/libciteproc_rs.a" "$SYMROOT"
+# echo $SYMROOT
+# ls $SYMROOT

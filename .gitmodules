@@ -1,0 +1,4 @@
+[submodule "citeproc-rs"]
+	path = citeproc-rs
+	url = https://github.com/zotero/citeproc-rs.git
+	branch = ffi
