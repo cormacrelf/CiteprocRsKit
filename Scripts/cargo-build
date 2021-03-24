@@ -32,5 +32,5 @@ if [[ -z "$ACTION" ]]; then export ACTION=build; fi
 
 # this could well be only one architecture, but lipo is good at reading xcode's env vars and translating into cargo.
 cd "$PROJECT_DIR/citeproc-rs" && cargo lipo --xcode-integ -p citeproc-ffi
-mkdir -p "$PROJECT_DIR/Resources/Build/$CONFIGURATION/$PLATFORM_NAME"
-cp "$RUST_WS/target/universal/$CONFIG/libciteproc_rs.a" "$PROJECT_DIR/Resources/Build/$CONFIGURATION/$PLATFORM_NAME"
+mkdir -p "$PROJECT_DIR/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME"
+cp "$RUST_WS/target/universal/$CONFIG/libciteproc_rs.a" "$PROJECT_DIR/Cargo/Build/$CONFIGURATION/$PLATFORM_NAME"
