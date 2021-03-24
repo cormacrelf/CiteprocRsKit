@@ -1,0 +1,29 @@
+# basically replicates some of cargo-lipo's xcode integration
+
+
+xcode_to_cargo_target() {
+  local XCODE_ARCH="$1"
+  local XCODE_TARGET="$2"
+  case "$XCODE_ARCH" in
+    armv7) CARGO_ARCH="armv7" ;;
+    arm64) CARGO_ARCH="aarch64" ;;
+    i386) CARGO_ARCH="i386" ;;
+    x86_64) CARGO_ARCH="x86_64" ;;
+    *) echo "error: unsupported xcode arch name $XCODE_ARCH" > /dev/stderr && exit 1
+      ;;
+  esac
+  case "$XCODE_TARGET" in
+    macosx) CARGO_TARGET="apple-darwin" ;;
+    *) CARGO_TARGET="apple-ios" ;;
+  esac
+  printf "$CARGO_ARCH-$CARGO_TARGET"
+}
+targets_from_env() {
+  if [[ -z "$ARCHS" ]]; then echo "ARCHS env var empty"; exit 1; fi
+  local IFS=" "
+  read -ra xcode_archs <<< "$ARCHS"
+  for a in "${xcode_archs[@]}"; do
+    cd "$PROJECT_DIR/citeproc-rs" && cargo build -p citeproc-ffi $IF_RELEASE --target
+    # hmmmm
+  done
+}

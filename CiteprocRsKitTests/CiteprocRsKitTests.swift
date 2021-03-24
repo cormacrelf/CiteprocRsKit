@@ -24,6 +24,7 @@ class CiteprocRsKitTests: XCTestCase {
         
         let locale_callback: (String) -> String? = { lang in
             if lang == "en-US" {
+                print("returning en-US locale")
                 return EN_US
             } else {
                 print("I don't know that locale " + lang)

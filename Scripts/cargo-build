@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+# The $PATH used by Xcode likely won't contain Cargo, fix that.
+# This assumes a default `rustup` setup.
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# https://github.com/TimNN/cargo-lipo/issues/41#issuecomment-774793892
+if [[ -n "${DEVELOPER_SDK_DIR:-}" ]]; then
+  # Assume we're in Xcode, which means we're probably cross-compiling.
+  # In this case, we need to add an extra library search path for build scripts and proc-macros,
+  # which run on the host instead of the target.
+  # (macOS Big Sur does not have linkable libraries in /usr/lib/.)
+  export LIBRARY_PATH="${DEVELOPER_SDK_DIR}/MacOSX.sdk/usr/lib:${LIBRARY_PATH:-}"
+fi
+
+CONFIG="debug"
+if [[ "$CONFIGURATION" == "Release" ]]; then CONFIG="release"; fi
+
+if ! command -v cargo-lipo &> /dev/null
+then
+  echo "error: cargo-lipo not installed. Please run: cargo install --force cargo-lipo" > /dev/stderr
+  exit 1
+fi
+
+RUST_WS="${PROJECT_DIR}/citeproc-rs"
+
+# xcode doesn't set this for external build tools, and cargo lipo needs to know what we need it to do
+if [[ -z "$ACTION" ]]; then export ACTION=build; fi
+
+# this could well be only one architecture, but lipo is good at reading xcode's env vars and translating into cargo.
+cd "$PROJECT_DIR/citeproc-rs" && cargo lipo --xcode-integ -p citeproc-ffi
+mkdir -p "$PROJECT_DIR/Resources/Build/$CONFIGURATION/$PLATFORM_NAME"
+cp "$RUST_WS/target/universal/$CONFIG/libciteproc_rs.a" "$PROJECT_DIR/Resources/Build/$CONFIGURATION/$PLATFORM_NAME"
