@@ -10,7 +10,6 @@
 		851A4944260AD10B00AD1322 /* CiteprocRsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */; };
 		851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */; };
 		851A4955260AD12300AD1322 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4954260AD12300AD1322 /* API.swift */; };
-		85A2F49E260AFE7E00B8DCE6 /* Modules in Resources */ = {isa = PBXBuildFile; fileRef = 85A2F49D260AFE7E00B8DCE6 /* Modules */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -203,7 +202,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85A2F49E260AFE7E00B8DCE6 /* Modules in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

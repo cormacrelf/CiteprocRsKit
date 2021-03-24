@@ -9,10 +9,11 @@ import Foundation
 import CoreText
 import CiteprocRs
 
-struct InitOptions {
-    let style: String
-    let locale_callback: (String) -> String?
+public struct InitOptions {
+    public let style: String
+    public let locale_callback: (String) -> String?
 }
+
 struct FetchContext {
     let locale_callback: (String) -> String?
 }
@@ -32,17 +33,17 @@ func locale_fetch_callback(ctx_raw: UnsafeMutableRawPointer?, slot: OpaquePointe
 
 }
 
-struct Driver {
+public struct CiteprocRsDriver {
     private let raw: OpaquePointer
     private let fetch_ctx: UnsafePointer<FetchContext>
-    fileprivate static func from_raw(raw: OpaquePointer?, fetch_ctx: UnsafePointer<FetchContext>) -> Driver? {
+    private static func from_raw(raw: OpaquePointer?, fetch_ctx: UnsafePointer<FetchContext>) -> Self? {
         if let raw = raw {
             return Self.init(raw: raw, fetch_ctx: fetch_ctx)
         } else {
             return nil
         }
     }
-    static func new(options: InitOptions) -> Driver? {
+    public static func new(options: InitOptions) -> CiteprocRsDriver? {
         let ctx: UnsafeMutablePointer<FetchContext> = UnsafeMutablePointer.allocate(capacity: 1)
         ctx.initialize(to: FetchContext(locale_callback: options.locale_callback))
         let ctx_raw: UnsafeMutableRawPointer! = UnsafeMutableRawPointer(ctx)
@@ -62,6 +63,6 @@ struct Driver {
             )
             return CiteprocRs.citeproc_rs_new(options)
         })
-        return Driver.from_raw(raw: raw, fetch_ctx: ctx)
+        return CiteprocRsDriver.from_raw(raw: raw, fetch_ctx: ctx)
     }
 }

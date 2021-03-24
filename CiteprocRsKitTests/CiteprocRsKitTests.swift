@@ -31,7 +31,7 @@ class CiteprocRsKitTests: XCTestCase {
                 return nil
             }
         }
-        let driver = Driver.new(options: InitOptions(style: style, locale_callback: locale_callback))
+        let driver = CiteprocRsDriver.new(options: InitOptions(style: style, locale_callback: locale_callback))
         
         XCTAssert(driver != nil)
     }
