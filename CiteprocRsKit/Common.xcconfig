@@ -1,0 +1,29 @@
+//
+//  Common.xcconfig
+//  CiteprocRsKit
+//
+//  Created by Cormac Relf on 26/3/21.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+SWIFT_VERSION = 5.0
+
+// Makes archive builds in carthage build for all these platforms
+// If you want e.g. watchos support, then add handling anywhere $PLATFORM_NAME appears in the build script
+SUPPORTED_PLATFORMS = iphonesimulator iphoneos macosx
+
+// The MACOS one sets the MACOSX_DEPLOYMENT_TARGET which rustc's LLVM uses I belive.
+// The IPHONEOS one here eventually makes it into LLVM_TARGET_TRIPLE_SUFFIX which we use to construct rustc
+// {aarch64,x86_64}-apple-ios targets with custom LLVM target triples. This is all in the name of avoiding
+// a bunch of linker or xcframework creation errors where the static libraries have bad versions embedded
+// in the Mach-O load directives. This is only a problem for iphoneos/iphonesimulator.
+IPHONEOS_DEPLOYMENT_TARGET = 11.0
+MACOSX_DEPLOYMENT_TARGET = 10.13
+
+// Because we set important env variables in this file,
+// make sure the external build tool target gets this xcconfig.
+
+// Some global necessary things
+ALWAYS_SEARCH_USER_PATHS = NO

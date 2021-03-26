@@ -1,0 +1,22 @@
+//
+//  Release.xcconfig
+//  CiteprocRsKit
+//
+//  Created by Cormac Relf on 26/3/21.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "./Common.xcconfig"
+
+// Compilation mode (independent of optimization level)
+SWIFT_COMPILATION_MODE = wholemodule
+// If you enable LTO it fails to link
+LLVM_LTO = NO
+// Optimise please
+SWIFT_OPTIMIZATION_LEVEL = -O
+// This is the default for release mode but yes, build them all
+ONLY_ACTIVE_ARCH = NO
+// App store validation checks
+VALIDATE_PRODUCT = YES

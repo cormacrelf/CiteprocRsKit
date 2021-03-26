@@ -1,0 +1,55 @@
+//
+//  Config.xcconfig
+//  CiteprocRsKit
+//
+//  Created by Cormac Relf on 25/3/21.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// The Swift library (CiteprocRsKit)
+
+// We're building a static library
+MACH_O_TYPE = staticlib
+// We will build modulemaps for CiteprocRsKit's own headers
+DEFINES_MODULE = YES
+// For Swift, this enables support for library evolution and generation of a module interface file.
+BUILD_LIBRARY_FOR_DISTRIBUTION = YES
+// Tell clang to enable modules, if we happen to want to invoke clang at any point
+CLANG_ENABLE_MODULES = YES
+
+// Finding citeproc-rs' ffi static library
+
+// Finds a modulemap file at citeproc-rs/bindings/ffi/module.modulemap
+SWIFT_INCLUDE_PATHS = citeproc-rs/bindings
+// If you're embedding in an objc project, etc, using only headers no modules
+// HEADER_SEARCH_PATHS = $(inherited) "$(PROJECT_DIR)/citeproc-rs/bindings/ffi/include"
+
+// Why do we have $CURRENT_ARCH in the library search path?
+//
+// Technically you could use `lipo -create` or `libtool -static` for each multi-arch build (simulator, macos)
+// and then link to a single one, but xcode is just going to thin it out again once per arch, build per-arch
+// swift objects, link each per-arch (API.o, thinned citeproc) combo, and then merge them all together.
+//
+// This way you avoid wasting cycles doing "still technically unsupported" lipo invocations, and you can also
+// see the size difference between archs. (ARM binaries are bigger! Because RISC.)
+// So in the build script we build one of each arch and place it in this folder structure.
+// It requires a bit of translating because Xcode's variables have different values than cargo does.
+//    Xcode (PLATFORM_NAME=iphoneos, CONFIGURATION=Release, CURRENT_ARCH=arm64)
+// != cargo (e.g. --target aarch64-apple-ios --release, goes into target/aarch64-apple-ios/release)
+
+LIBRARY_SEARCH_PATHS = $(inherited) "$(PROJECT_DIR)/Cargo/Build/$PLATFORM_NAME/$CONFIGURATION/$CURRENT_ARCH"
+
+
+// Libtool is used near the end of xcode builds to merge object files into static libraries.
+// Until this point the Swift compilation doesn't actually link any libraries, it just uses module search paths
+// to find modules, and those modules to find headers.
+// Hence, the OTHER_LDFLAGS has essentially no effect because AFAIK ld is simply not used anywhere in swift-only
+// builds. But it may be necessary if you're linking with something other than swift.
+// Libtool invocation has $(LIBRARY_SEARCH_PATHS) already.
+
+OTHER_LDFLAGS = $(inherited) -lciteproc_rs
+OTHER_LIBTOOLFLAGS = $(inherited) -lciteproc_rs
+
+

@@ -1,0 +1,20 @@
+//
+//  Debug.xcconfig
+//  CiteprocRsKit
+//
+//  Created by Cormac Relf on 26/3/21.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include "./Common.xcconfig"
+
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+
+// Lets us import with @testable in the test target
+ENABLE_TESTABILITY = YES
+
+// You will never need to build all archs in debug mode.
+// That would silly.
+ONLY_ACTIVE_ARCH = YES

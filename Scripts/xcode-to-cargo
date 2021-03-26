@@ -1,9 +1,80 @@
-# basically replicates some of cargo-lipo's xcode integration
+#!/usr/bin/env bash
+# basically replicates cargo-lipo's --xcode-integ flag,
+# but also generates cargo target JSON files on the fly to ensure Clang
+# puts the correct ios min version numbers are embedded in the binaries
+# when it links the Rust.
+#
+# Not great because `rustc -Z build-std` required and hence nightly Rust.
 
+# things we pull from xcode env
+# need PLATFORM_NAME
+# need LLVM_TARGET_TRIPLE_*
+# need CONFIGURATION
+CARGO_PROFILE="debug"
+if [[ "$CONFIGURATION" == "Release" ]]; then CARGO_PROFILE="release"; fi
+RELEASE_ARG=""
+if [[ "$CONFIGURATION" == "Release" ]]; then RELEASE_ARG="--release"; fi
 
-xcode_to_cargo_target() {
+# jq runner
+function jq_go() {
+  jq $JQ_ARGS "$JQ_FILTERS" $@
+}
+function jq_reset() {
+  JQ_ARGS=""
+  JQ_FILTERS="  ."
+}
+jq_reset
+function jq_append() {
+  if [ -n "$1" ]; then JQ_ARGS=$(printf "$JQ_ARGS \n  $1"); fi
+  if [ -n "$2" ]; then JQ_FILTERS=$(printf "$JQ_FILTERS \n  | $2"); fi
+}
+
+target_suffix() {
+  case "$PLATFORM_NAME" in
+    "iphoneos") echo "iphoneos";;
+    "iphonesimulator") echo "iphonesimulator";;
+    *) echo "";;
+  esac
+}
+
+plat_min_version() {
+  # local OS=${TARGET##*-} # https://stackoverflow.com/a/3162500
+  case "$PLATFORM_NAME" in
+    "iphoneos") echo "11.0";;
+    "iphonesimulator") echo "-simulator11.0";;
+    *) echo "";;
+  esac
+}
+
+maybe_custom_target() {
   local XCODE_ARCH="$1"
-  local XCODE_TARGET="$2"
+  local CARGO_TARGET="$2"
+  if [[ -z "$CARGO_TARGET" ]]; then echo "no target specified" > /dev/stderr && return 1; fi
+  # no modification necessary for macos, that I believe just sets the -darwinNUMBER part of the LLVM target triple to whatever OSX 10.7 ran on
+  case "$PLATFORM_NAME" in
+    macosx) echo "$CARGO_TARGET" && return;;
+  esac
+  # here's how LLVM env vars appear for the iphonesimulator platform
+  # export LLVM_TARGET_TRIPLE_OS_VERSION\=ios11.0
+  # export LLVM_TARGET_TRIPLE_SUFFIX\=-simulator
+  # export LLVM_TARGET_TRIPLE_VENDOR\=apple
+  SUFFIX=${LLVM_TARGET_TRIPLE_SUFFIX:-}
+  # this doesn't actually matter llvm has arch aliases
+  local LLVM_ARCH=$(cargo_arch $XCODE_ARCH)
+  local LLVM_TARGET_TRIPLE="$LLVM_ARCH-$LLVM_TARGET_TRIPLE_VENDOR-$LLVM_TARGET_TRIPLE_OS_VERSION$SUFFIX"
+  local MINVER="$(plat_min_version)"
+  local SUFFIX="$(target_suffix)"
+  local CUSTOM_TARGET="$CARGO_TARGET$MINVER$SUFFIX"
+  local TARGET_JSON="$PROJECT_DIR/Cargo/Targets/$CUSTOM_TARGET.json"
+  mkdir -p "$PROJECT_DIR/Cargo/Targets"
+  jq_reset
+  jq_append "--arg triple $LLVM_TARGET_TRIPLE" '."llvm-target" = $triple'
+  rustc +nightly -Z unstable-options --print target-spec-json --target $CARGO_TARGET | jq_go > "$TARGET_JSON"
+  echo $CUSTOM_TARGET
+}
+
+cargo_arch() {
+  local XCODE_ARCH="$1"
   case "$XCODE_ARCH" in
     armv7) CARGO_ARCH="armv7" ;;
     arm64) CARGO_ARCH="aarch64" ;;
@@ -12,18 +83,48 @@ xcode_to_cargo_target() {
     *) echo "error: unsupported xcode arch name $XCODE_ARCH" > /dev/stderr && exit 1
       ;;
   esac
-  case "$XCODE_TARGET" in
+  printf $CARGO_ARCH
+}
+
+xcode_arch_target_to_cargo_target() {
+  local XCODE_ARCH="$1"
+  local XCODE_PLAT="$2"
+  local CARGO_ARCH=$(cargo_arch $XCODE_ARCH)
+  case "$XCODE_PLAT" in
     macosx) CARGO_TARGET="apple-darwin" ;;
     *) CARGO_TARGET="apple-ios" ;;
   esac
   printf "$CARGO_ARCH-$CARGO_TARGET"
 }
-targets_from_env() {
-  if [[ -z "$ARCHS" ]]; then echo "ARCHS env var empty"; exit 1; fi
-  local IFS=" "
-  read -ra xcode_archs <<< "$ARCHS"
-  for a in "${xcode_archs[@]}"; do
-    cd "$PROJECT_DIR/citeproc-rs" && cargo build -p citeproc-ffi $IF_RELEASE --target
-    # hmmmm
-  done
+
+# returns a PROJECT_DIR-relative path to e.g. target/triple/release output folder
+cargo_custom_target_build() {
+  local CARGO_TARGET_DIR="$1"
+  local MANIFEST_PATH="$2"
+  local TARGET="$3"
+  local FILENAME="$4"
+
+  local JSON="Cargo/Targets/$TARGET.json"
+  local TARGET_ARG="$TARGET"
+  local BUILD_STD=""
+  if [[ -f "$JSON" ]]; then
+    TARGET_ARG="$JSON"
+    BUILD_STD="-Z build-std"
+  fi
+  local OUT_FILE="$CARGO_TARGET_DIR/$TARGET/$CARGO_PROFILE/$FILENAME"
+  rm -f "$OUT_FILE"
+  cargo +nightly build $BUILD_STD --manifest-path "${PROJECT_DIR}/citeproc-rs/bindings/ffi/Cargo.toml" --target "$TARGET_ARG" $RELEASE_ARG
+  echo "$OUT_FILE"
+}
+
+cargo_build_arch_plat() {
+  local CARGO_TARGET_DIR="$1"
+  local MANIFEST_PATH="$2"
+  local XCODE_ARCH="$3"
+  local PLAT="$4"
+  local LIBRARY_FILENAME="$5"
+
+  local CARGO_TARGET=$(xcode_arch_target_to_cargo_target "$XCODE_ARCH" "$PLAT")
+  CARGO_TARGET=$(maybe_custom_target $XCODE_ARCH $CARGO_TARGET)
+  cargo_custom_target_build "$CARGO_TARGET_DIR" "$MANIFEST_PATH" $CARGO_TARGET $LIBRARY_FILENAME
 }

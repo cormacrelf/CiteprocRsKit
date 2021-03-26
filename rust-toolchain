@@ -1,0 +1,15 @@
+[toolchain]
+channel = "nightly"
+profile = "minimal"
+components = [ "rust-src" ]
+targets = [
+# intel macs
+  "x86_64-apple-darwin",
+# arm macs
+  "aarch64-apple-darwin",
+# simulator
+  "x86_64-apple-ios",
+# ios devices
+  "aarch64-apple-ios",
+]
+
