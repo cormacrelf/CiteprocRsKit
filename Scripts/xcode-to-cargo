@@ -29,23 +29,6 @@ function jq_append() {
   if [ -n "$2" ]; then JQ_FILTERS=$(printf "$JQ_FILTERS \n  | $2"); fi
 }
 
-target_suffix() {
-  case "$PLATFORM_NAME" in
-    "iphoneos") echo "iphoneos";;
-    "iphonesimulator") echo "iphonesimulator";;
-    *) echo "";;
-  esac
-}
-
-plat_min_version() {
-  # local OS=${TARGET##*-} # https://stackoverflow.com/a/3162500
-  case "$PLATFORM_NAME" in
-    "iphoneos") echo "11.0";;
-    "iphonesimulator") echo "-simulator11.0";;
-    *) echo "";;
-  esac
-}
-
 maybe_custom_target() {
   local XCODE_ARCH="$1"
   local CARGO_TARGET="$2"
@@ -54,17 +37,24 @@ maybe_custom_target() {
   case "$PLATFORM_NAME" in
     macosx) echo "$CARGO_TARGET" && return;;
   esac
+
   # here's how LLVM env vars appear for the iphonesimulator platform
   # export LLVM_TARGET_TRIPLE_OS_VERSION\=ios11.0
   # export LLVM_TARGET_TRIPLE_SUFFIX\=-simulator
   # export LLVM_TARGET_TRIPLE_VENDOR\=apple
-  SUFFIX=${LLVM_TARGET_TRIPLE_SUFFIX:-}
+  # the suffix is usually not defined so:
+  local SUFFIX=${LLVM_TARGET_TRIPLE_SUFFIX:-}
   # this doesn't actually matter llvm has arch aliases
   local LLVM_ARCH=$(cargo_arch $XCODE_ARCH)
   local LLVM_TARGET_TRIPLE="$LLVM_ARCH-$LLVM_TARGET_TRIPLE_VENDOR-$LLVM_TARGET_TRIPLE_OS_VERSION$SUFFIX"
-  local MINVER="$(plat_min_version)"
-  local SUFFIX="$(target_suffix)"
-  local CUSTOM_TARGET="$CARGO_TARGET$MINVER$SUFFIX"
+
+  # make sure the target name still looks like a normal
+  # target because things not in the form
+  # arch-vendor-os$etc do not work with -Z build-std
+  # https://github.com/rust-lang/wg-cargo-std-aware/issues/60#issuecomment-695045762
+  local CARGO_ARCH_VENDOR="${CARGO_TARGET%-*}" # e.g. "aarch64-apple"
+  local CUSTOM_TARGET="$CARGO_ARCH_VENDOR-$LLVM_TARGET_TRIPLE_OS_VERSION$SUFFIX"
+
   local TARGET_JSON="$PROJECT_DIR/Cargo/Targets/$CUSTOM_TARGET.json"
   mkdir -p "$PROJECT_DIR/Cargo/Targets"
   jq_reset
