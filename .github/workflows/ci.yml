@@ -1,0 +1,31 @@
+
+jobs:
+  test:
+    name: CiteprocRsKitTests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true # not recursive
+      - name: Install Rust toolchain from rust-toolchain file
+        id: rust_toolchain
+        run: |
+          rustup show
+          echo "::set-output name=version::$(rustc --version | tr ' ' '-' | sed -e 's/(//' -e 's/)//')"
+      - name: Cache cargo directories
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            citeproc-rs/target
+          key: ${{ runner.os }}-citeproc-rs-debug-${{steps.rust_toolchain.outputs.version}}-target
+      - name: Xcode Test
+        uses: sersoft-gmbh/xcodebuild-action@v1.4
+        with:
+          project: CiteprocRsKit.xcodeproj
+          scheme: CiteprocRsKit
+          destination: platform=macOS
+          action: test
+
