@@ -1,0 +1,110 @@
+name: '[nightly] Publish .xcframework to GitHub Releases'
+on:
+  push:
+    branches:
+    - master
+    - ci-test
+
+jobs:
+  publish_nightly_release:
+    name: Publish 
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true # don't get citeproc-rs submodules
+
+      - name: Install Rust toolchain from rust-toolchain file
+        id: rust_toolchain
+        run: |
+          rustup show
+          rustc --version
+          VERSION=$(rustc --version | tr ' ' '-' | sed -e 's/(//' -e 's/)//')
+          echo "::set-output name=version::${VERSION}"
+
+        # https://github.com/actions-rs/toolchain/issues/126#issuecomment-782989659
+
+      - name: Cache cargo directories
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            citeproc-rs/target
+          # key: ${{ runner.os }}-citeproc-rs-release-${{steps.rust_toolchain.outputs.version}}-target-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-citeproc-rs-release-${{steps.rust_toolchain.outputs.version}}-target
+          restore-keys: |
+            ${{ runner.os }}-citeproc-rs-release-${{steps.rust_toolchain.outputs.version}}-target-
+
+      - name: Carthage build
+        run: carthage build --use-xcframeworks --no-skip-current --verbose
+
+      # - name: Compress into .xcframework.zip
+      #   run: cd Carthage/Build && zip -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework
+      #
+      # - name: Deploy Nightly [latest]
+      #   uses: WebFreak001/deploy-nightly@v1.1.0
+      #   id: latest_release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: 'https://uploads.github.com/repos/cormacrelf/CiteprocRsKit/releases/40612558/assets{?name,label}'
+      #     release_id: 40612558
+      #     asset_path: Carthage/Build/CiteprocRsKit.xcframework.zip
+      #     asset_name: CiteprocRsKit.xcframework-latest.zip
+      #     asset_content_type: application/zip
+      #
+      # - name: Deploy Nightly [named]
+      #   uses: WebFreak001/deploy-nightly@v1.1.0
+      #   id: named_release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: 'https://uploads.github.com/repos/cormacrelf/CiteprocRsKit/releases/40612558/assets{?name,label}'
+      #     release_id: 40612558
+      #     asset_path: Carthage/Build/CiteprocRsKit.xcframework.zip
+      #     asset_name: CiteprocRsKit.xcframework-nightly-$$
+      #     asset_content_type: application/zip
+      #     max_releases: 7
+      #
+      # - name: Get version info & checksum zip
+      #   id: version
+      #   run: |
+      #     SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+      #     CHECKSUM=$(cd Carthage/Build && touch Package.swift && swift package compute-checksum CiteprocRsKit.xcframework.zip && rm Package.swift)
+      #     echo "::set-output name=short_sha::${SHORT_SHA}"
+      #     echo "::set-output name=date::$(date +"%Y-%m-%d")"
+      #     echo "::set-output name=swift_checksum::${CHECKSUM}"
+      #     echo "::set-output name=npm_version::v0.0.0-canary-${SHORT_SHA}"
+      #
+      # ##########
+      # ### This won't work with an existing release id
+      # - name: Update release text
+      #   id: update_release
+      #   uses: tubone24/update_release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     release_name: Nightly ${{ steps.version.outputs.date }} (${{ steps.version.outputs.short_sha }})
+      #     body: |
+      #       Add [CiteprocRsKit-Binary](https://github.com/cormacrelf/CiteprocRsKit-Binary) as a dependency.
+      #
+      #
+      # - name: Publish to CiteprocRsKit-Binary [nightly]
+      #   run: |
+      #     ROOT="$(pwd)"
+      #     TMP="$(mktmp -d)"
+      #     cd "$TMP"
+      #     git clone https://github.com/cormacrelf/CiteprocRsKit-Binary.git --branch nightly
+      #     cd CiteprocRsKit-Binary
+      #     cp -R "$ROOT"/Scripts/BinaryPackage/* .
+      #     sed \
+      #       -e 's,XCFRAMEWORK_ZIP_URL,${{ steps.named_release.outputs.url }},i' \
+      #       '.....' \
+      #       < "$ROOT/Scripts/BinaryPackage/Package.swift" \
+      #       > "./Package.swift"
+      #     git add .
+      #     git commit -m "update nightly to ${{ steps.version.outputs.short_sha }}" \
+      #                -m "https://github.com/cormacrelf/CiteprocRsKit/commit/$GITHUB_SHA"
+      #     git push -f origin nightly
+
