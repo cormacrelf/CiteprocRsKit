@@ -59,7 +59,7 @@ maybe_custom_target() {
   mkdir -p "$PROJECT_DIR/Cargo/Targets"
   jq_reset
   jq_append "--arg triple $LLVM_TARGET_TRIPLE" '."llvm-target" = $triple'
-  rustc +nightly -Z unstable-options --print target-spec-json --target $CARGO_TARGET | jq_go > "$TARGET_JSON"
+  rustc -Z unstable-options --print target-spec-json --target $CARGO_TARGET | jq_go > "$TARGET_JSON"
   echo $CUSTOM_TARGET
 }
 
@@ -103,7 +103,7 @@ cargo_custom_target_build() {
   fi
   local OUT_FILE="$CARGO_TARGET_DIR/$TARGET/$CARGO_PROFILE/$FILENAME"
   rm -f "$OUT_FILE"
-  cargo +nightly build $BUILD_STD --manifest-path "${PROJECT_DIR}/citeproc-rs/bindings/ffi/Cargo.toml" --target "$TARGET_ARG" $RELEASE_ARG
+  cargo build $BUILD_STD --manifest-path "${PROJECT_DIR}/citeproc-rs/bindings/ffi/Cargo.toml" --target "$TARGET_ARG" $RELEASE_ARG
   echo "$OUT_FILE"
 }
 
