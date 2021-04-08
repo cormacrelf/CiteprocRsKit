@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+CLEAR='\033[0m'
+RED='\033[0;31m'
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$DIR/.." && pwd )"
+cd "$DIR"
+
+bail() {
+  MESSAGE="$@"
+  echo -e "${RED}failed: ${MESSAGE}${CLEAR}"
+  exit 1
+}
+
+if ! command -v rustup &>/dev/null; then
+  bail "missing rustup command"
+fi
+
+# install from rust-toolchain
+rustup show &>/dev/null
+
+if ! command -v gh &>/dev/null; then
+  bail "missing gh command (try \$ brew install gh; gh auth)"
+fi
+
+SKIP_BUILD=false
+EXR=false
+EXISTING_RELEASE=""
+
+parse_params() {
+  while [[ "$#" > 0 ]]; do case $1 in
+    --skip-build) SKIP_BUILD=true; shift;;
+    # --push-tags) PUSH_TAGS=true; OUTPUT="CHANGELOG.md"; shift;;
+    # --gh-release) SAVE=true; OUTPUT="CHANGELOG.md"; shift;;
+    --existing-release) EXR=true; EXISTING_RELEASE="$2"; shift 2;;
+    --|--help) bail "huh";;
+    *) bail "Unknown parameter passed: $1";;
+  esac; done
+}
+
+parse_params $@
+
+build() {
+  set -euo pipefail
+  rustup show
+  carthage build --use-xcframeworks --no-skip-current --verbose
+  (cd Carthage/Build && zip -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework)
+}
+
+checksum () {
+  set +e
+  # SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+  cd Carthage/Build
+  touch Package.swift 
+  local CHECKSUM=$(swift package compute-checksum CiteprocRsKit.xcframework.zip)
+  rm Package.swift
+  echo $CHECKSUM
+}
+
+if $SKIP_BUILD && [[ -f Carthage/Build/CiteprocRsKit.xcframework.zip ]]; then
+  echo -n
+else
+  build
+fi
+
+if $EXR; then
+  CHECKSUM=$(checksum)
+  gh release upload $EXISTING_RELEASE Carthage/Build/CiteprocRsKit.xcframework.zip
+fi
