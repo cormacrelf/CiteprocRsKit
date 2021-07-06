@@ -28,13 +28,21 @@ fi
 SKIP_BUILD=false
 EXR=false
 EXISTING_RELEASE=""
+RELEASE=false
+TAG=""
+PUSH_BINARY_REPO=false
 
 parse_params() {
   while [[ "$#" > 0 ]]; do case $1 in
     --skip-build) SKIP_BUILD=true; shift;;
     # --push-tags) PUSH_TAGS=true; OUTPUT="CHANGELOG.md"; shift;;
     # --gh-release) SAVE=true; OUTPUT="CHANGELOG.md"; shift;;
-    --existing-release) EXR=true; EXISTING_RELEASE="$2"; shift 2;;
+    --existing-release)
+      # e.g. you have a draft already (untagged-...)
+      EXR=true; EXISTING_RELEASE="$2"; shift 2;;
+    --release) RELEASE=true; shift;;
+    --tag) TAG="$2"; shift 2;;
+    --push-binary-repo) PUSH_BINARY_REPO=true; shift;;
     --|--help) bail "huh";;
     *) bail "Unknown parameter passed: $1";;
   esac; done
@@ -59,13 +67,69 @@ checksum () {
   echo $CHECKSUM
 }
 
+push_binary_repo() {
+  local TAG="$1"
+  local CHECKSUM="$2"
+  local TMP="$(mktemp -d)"
+  trap "rm -rf -- $TMP" EXIT
+
+  local DL=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+
+  cd "$TMP"
+  git clone https://github.com/cormacrelf/CiteprocRsKit-Binary.git --branch master
+  cd CiteprocRsKit-Binary
+  cp -R "$DIR"/Scripts/BinaryPackage/* .
+  sed \
+    -e "s,XCFRAMEWORK_ZIP_URL,$DL,i" \
+    -e "s,XCFRAMEWORK_ZIP_CHECKSUM,$CHECKSUM,i" \
+    < "$DIR/Scripts/BinaryPackage/Package.swift" \
+    > "./Package.swift"
+  git add .
+  # TODO add upstream sha
+  local GITHUB_SHA=TODO
+  git commit -m "release $TAG from $GITHUB_SHA" \
+             -m "https://github.com/cormacrelf/CiteprocRsKit/commit/$GITHUB_SHA"
+  git tag -f -a -m "release $TAG from $GITHUB_SHA" $TAG
+  echo $(pwd)
+  git push origin
+  git push --force --tags origin
+  cd "$DIR"
+  git pull --tags origin
+}
+
+upload() {
+  set +e
+  gh release upload $1 Carthage/Build/CiteprocRsKit.xcframework.zip
+}
+
+edit_release() {
+  local TAG="$1"
+  local CHECKSUM="$2"
+  local RELEASE=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.url')
+  local BODY=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.body')
+  local DL=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+  if ! (echo $BODY | grep -q $CHECKSUM); then
+    echo "patching body"
+    gh api -X PATCH $RELEASE -f "body=$BODY\n\nChecksum: $CHECKSUM"
+  fi
+  echo $DL
+}
+
 if $SKIP_BUILD && [[ -f Carthage/Build/CiteprocRsKit.xcframework.zip ]]; then
   echo -n
 else
   build
 fi
 
+CHECKSUM=$(checksum)
 if $EXR; then
-  CHECKSUM=$(checksum)
-  gh release upload $EXISTING_RELEASE Carthage/Build/CiteprocRsKit.xcframework.zip
+  upload $EXISTING_RELEASE
+  edit_release $EXISTING_RELEASE $CHECKSUM
+elif $RELEASE; then
+  gh release create $TAG -n "Checksum: $CHECKSUM"
+  upload $TAG
+fi
+
+if $PUSH_BINARY_REPO && ! [ -z "$TAG" ]; then
+  push_binary_repo $TAG $CHECKSUM
 fi
