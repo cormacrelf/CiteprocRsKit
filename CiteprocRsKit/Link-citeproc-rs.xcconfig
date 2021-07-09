@@ -22,7 +22,7 @@ CLANG_ENABLE_MODULES = YES
 // Finding citeproc-rs' ffi static library
 
 // Finds a modulemap file at citeproc-rs/bindings/ffi/module.modulemap
-SWIFT_INCLUDE_PATHS = citeproc-rs/bindings
+SWIFT_INCLUDE_PATHS = citeproc-rs/bindings/ffi/modules/swift
 // If you're embedding in an objc project, etc, using only headers no modules
 // HEADER_SEARCH_PATHS = $(inherited) "$(PROJECT_DIR)/citeproc-rs/bindings/ffi/include"
 
