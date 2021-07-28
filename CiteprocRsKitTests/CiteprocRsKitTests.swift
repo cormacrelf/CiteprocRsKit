@@ -124,7 +124,7 @@ class CiteprocRsKitTests: XCTestCase {
             XCTAssertEqual(out, res)
         }
         let thrower = {
-            throw BindingsError.internalError("ok")
+            throw BindingsError.invalidUtf8
         }
         do {
             try thrower()

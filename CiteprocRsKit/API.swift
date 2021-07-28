@@ -38,14 +38,51 @@ func locale_fetch_callback(ctx_raw: UnsafeMutableRawPointer?, slot: OpaquePointe
             // why is unsafebufferpointer.count a signed integer????????????????
             let count = UInt(bytes.count)
             let baseAddress = bytes.baseAddress?.assumingMemoryBound(to: Int8.self)
-            CiteprocRs.citeproc_rs_write_locale_slot(slot: slot, locale_xml: baseAddress, locale_xml_len: count)
+            CiteprocRs.citeproc_rs_locale_slot_write(slot: slot, locale_xml: baseAddress, locale_xml_len: count)
         })
     }
 }
 
 public enum BindingsError: Error {
     case invalidUtf8
-    case internalError(String)
+    case internalError(CiteprocRsErrorCode, String)
+    
+    internal static func error_display_text() -> String {
+        let len = CiteprocRs.citeproc_rs_last_error_length();
+        if len == 0 {
+            return ""
+        }
+        var buffer = [UInt8].init(repeating: 0, count: Int(len));
+        let bytes_written = buffer.withUnsafeMutableBytes({ raw_buf_ptr -> Int in
+            let baseAddress: UnsafeMutablePointer<CChar> = raw_buf_ptr.baseAddress!.assumingMemoryBound(to: Int8.self)
+            return CiteprocRs.citeproc_rs_error_message_utf8(buf: baseAddress, length: len)
+        })
+        if bytes_written == -1 {
+            return ""
+        }
+        let written_slice = buffer.prefix(bytes_written)
+        return String(decoding: written_slice, as: UTF8.self)
+    }
+    
+    internal init(internal_error: CiteprocRsErrorCode, api_name: String) {
+        switch internal_error {
+        case CiteprocRsErrorCode.none:
+            self = BindingsError.internalError(internal_error, "no error, but null value returned from \(api_name)")
+        case CiteprocRsErrorCode.caughtPanic: fallthrough
+        case CiteprocRsErrorCode.poisoned: fallthrough
+        case CiteprocRsErrorCode.utf8: fallthrough
+        case CiteprocRsErrorCode.reordering: fallthrough
+        case CiteprocRsErrorCode.nullPointer: fallthrough
+        @unknown default:
+            let e_str = BindingsError.error_display_text();
+            self = BindingsError.internalError(internal_error, e_str)
+        }
+    }
+    
+    internal static func from_last_error(api_name: String = "") -> Self {
+        let e = CiteprocRs.citeproc_rs_last_error_code()
+        return BindingsError(internal_error: e, api_name: api_name)
+    }
 }
 
 public class CiteprocRsDriver {
@@ -61,10 +98,10 @@ public class CiteprocRsDriver {
         let ctx: UnsafeMutablePointer<FetchContext> = UnsafeMutablePointer.allocate(capacity: 1)
         ctx.initialize(to: FetchContext(locale_callback: options.locale_callback))
         let ctx_raw: UnsafeMutableRawPointer! = UnsafeMutableRawPointer(ctx)
-        
         guard let data = options.style.data(using: .utf8, allowLossyConversion: false) else {
             throw BindingsError.invalidUtf8
         }
+        citeproc_rs_clear_last_error();
         let maybe_raw: OpaquePointer? =  with_data_as_char_ptr(data, { style, style_len in
             let options = CiteprocRsInitOptions(
                 style: style,
@@ -73,10 +110,10 @@ public class CiteprocRsDriver {
                 locale_fetch_callback: locale_fetch_callback,
                 format: options.output_format
             )
-            return citeproc_rs_processor_new(init: options)
+            return citeproc_rs_driver_new(init: options)
         })
         guard let raw = maybe_raw else {
-            throw BindingsError.internalError("Null driver returned from citeproc_rs")
+            throw BindingsError.from_last_error(api_name: "citeproc_rs_driver_new");
         }
         self.raw = raw
         self.fetch_ctx = UnsafePointer(ctx) // no longer mutable outside callback, but also don't read it
@@ -85,16 +122,16 @@ public class CiteprocRsDriver {
     public func one_ref_citation(_ reference: Any) throws -> String? {
         let ref_json: Data = try JSONSerialization.data(withJSONObject: reference)
         guard let ptr = with_data_as_char_ptr(ref_json, { buf, buf_len in
-            return citeproc_rs_processor_format_one(processor: self.raw, ref_bytes: buf, ref_bytes_len: buf_len)
+            return citeproc_rs_driver_format_one(driver: self.raw, ref_bytes: buf, ref_bytes_len: buf_len)
         }) else {
             return nil
         }
-        return string_from_rust_cstring(ptr)
+        return try string_from_rust_cstring(ptr)
     }
     
     deinit {
         self.fetch_ctx.deallocate()
-        citeproc_rs_processor_free(processor: self.raw)
+        citeproc_rs_driver_free(driver: self.raw)
     }
 }
 
@@ -107,8 +144,10 @@ internal func with_data_as_char_ptr<T>(_ data: Data, _ f: (UnsafePointer<Int8>, 
     })
 }
 
-internal func string_from_rust_cstring(_ ptr: UnsafeMutablePointer<CChar>) -> String {
-    let s = String.init(cString: ptr)
+internal func string_from_rust_cstring(_ ptr: UnsafeMutablePointer<CChar>) throws -> String {
+    guard let s = String(cString: ptr, encoding: .utf8) else {
+        throw BindingsError.invalidUtf8
+    }
     CiteprocRs.citeproc_rs_string_free(ptr: ptr)
     return s
 }
