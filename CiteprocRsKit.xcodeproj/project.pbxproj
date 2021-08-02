@@ -10,6 +10,11 @@
 		851A4944260AD10B00AD1322 /* CiteprocRsKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */; };
 		851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */; };
 		851A4955260AD12300AD1322 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851A4954260AD12300AD1322 /* API.swift */; };
+		852DD4AE26B15497002AED8D /* FetchContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4AD26B15497002AED8D /* FetchContext.swift */; };
+		852DD4B026B154BC002AED8D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4AF26B154BC002AED8D /* Errors.swift */; };
+		852DD4B226B3E410002AED8D /* FFIUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4B126B3E410002AED8D /* FFIUserData.swift */; };
+		852DD4B426B3E733002AED8D /* MemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4B326B3E733002AED8D /* MemoryTests.swift */; };
+		857D733C26B1320100C34654 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857D733B26B1320100C34654 /* Buffer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +41,12 @@
 		851A4954260AD12300AD1322 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CiteprocRsKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		851A495F260AD3EE00AD1322 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		852DD4AD26B15497002AED8D /* FetchContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchContext.swift; sourceTree = "<group>"; };
+		852DD4AF26B154BC002AED8D /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		852DD4B126B3E410002AED8D /* FFIUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFIUserData.swift; sourceTree = "<group>"; };
+		852DD4B326B3E733002AED8D /* MemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryTests.swift; sourceTree = "<group>"; };
 		856B441926086D410088EBFC /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
+		857D733B26B1320100C34654 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		85A2F50D260C38BD00B8DCE6 /* Link-citeproc-rs.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Link-citeproc-rs.xcconfig"; sourceTree = "<group>"; };
 		85E4B4D2260D99E4001B9ED1 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		85E4B4E1260D9DA7001B9ED1 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
@@ -78,6 +88,10 @@
 			children = (
 				851A495F260AD3EE00AD1322 /* Info.plist */,
 				851A4954260AD12300AD1322 /* API.swift */,
+				852DD4AF26B154BC002AED8D /* Errors.swift */,
+				852DD4AD26B15497002AED8D /* FetchContext.swift */,
+				852DD4B126B3E410002AED8D /* FFIUserData.swift */,
+				857D733B26B1320100C34654 /* Buffer.swift */,
 				85A2F50D260C38BD00B8DCE6 /* Link-citeproc-rs.xcconfig */,
 				85E4B4E4260D9E1A001B9ED1 /* Debug.xcconfig */,
 				85E4B4E1260D9DA7001B9ED1 /* Common.xcconfig */,
@@ -90,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */,
+				852DD4B326B3E733002AED8D /* MemoryTests.swift */,
 				851A494A260AD10B00AD1322 /* Info.plist */,
 			);
 			path = CiteprocRsKitTests;
@@ -169,7 +184,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					851A493A260AD10B00AD1322 = {
 						CreatedOnToolsVersion = 12.4;
@@ -225,7 +240,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				852DD4B026B154BC002AED8D /* Errors.swift in Sources */,
 				851A4955260AD12300AD1322 /* API.swift in Sources */,
+				857D733C26B1320100C34654 /* Buffer.swift in Sources */,
+				852DD4AE26B15497002AED8D /* FetchContext.swift in Sources */,
+				852DD4B226B3E410002AED8D /* FFIUserData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				852DD4B426B3E733002AED8D /* MemoryTests.swift in Sources */,
 				851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,6 +323,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -354,6 +375,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -366,7 +388,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 85A2F50D260C38BD00B8DCE6 /* Link-citeproc-rs.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -395,7 +417,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 85A2F50D260C38BD00B8DCE6 /* Link-citeproc-rs.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
