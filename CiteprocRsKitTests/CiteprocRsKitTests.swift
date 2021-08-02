@@ -86,6 +86,20 @@ class CiteprocRsKitTests: XCTestCase {
         XCTAssert(d != nil)
         d = nil
     }
+    
+    func testInvalidStyle() throws {
+        var error: String? = nil
+        do {
+            let _ = try CRDriver(style: mkstyle(citation: ""), localeCallback: { _ in nil }, outputFormat: .html)
+        } catch let e as CRBindingsError {
+            switch e.code {
+            case .invalidStyle: error = e.message; break
+            default: XCTFail("wrong error code, expected invalidStyle, got \(e)")
+            }
+        }
+        XCTAssert(error != nil)
+        XCTAssert(error == "style error: invalid style: bytes 0..246 [Error] Must have exactly one <citation> ()\n")
+    }
 
     func testLocaleFetch() throws {
         let style = mkstyle(default_locale: "de-AT")

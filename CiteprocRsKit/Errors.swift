@@ -20,6 +20,9 @@ extension CRErrorCode: CustomStringConvertible {
         case .serdeJson: return "serdeJson"
         case .utf8: return "utf8"
         case .nullPointer: return "nullPointer"
+        case .indexing: return "indexing"
+        case .clusterNotInFlow: return "clusterNotInFlow"
+        case .invalidStyle: return "invalidStyle"
         @unknown default: return "unknown(error code \(self.rawValue))"
         }
     }
@@ -65,9 +68,11 @@ extension CRBindingsError {
         return Self.with_display_text(code: code)
     }
 
-    internal static func maybe_throw() throws {
+    internal static func last_or_default(default _default: CRBindingsError = CRBindingsError.init(CRErrorCode.none, "unknown error")) -> Self {
         if let err = CRBindingsError.from_last_error() {
-            throw err
+            return err
+        } else {
+            return _default
         }
     }
 

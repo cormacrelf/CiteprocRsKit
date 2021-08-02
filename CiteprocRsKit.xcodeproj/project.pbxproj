@@ -15,6 +15,8 @@
 		852DD4B226B3E410002AED8D /* FFIUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4B126B3E410002AED8D /* FFIUserData.swift */; };
 		852DD4B426B3E733002AED8D /* MemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852DD4B326B3E733002AED8D /* MemoryTests.swift */; };
 		857D733C26B1320100C34654 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857D733B26B1320100C34654 /* Buffer.swift */; };
+		8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29926B7F26F007FF5AB /* ClusterTests.swift */; };
+		8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29B26B80563007FF5AB /* PanicTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		852DD4B326B3E733002AED8D /* MemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryTests.swift; sourceTree = "<group>"; };
 		856B441926086D410088EBFC /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		857D733B26B1320100C34654 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
+		8583B29926B7F26F007FF5AB /* ClusterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterTests.swift; sourceTree = "<group>"; };
+		8583B29B26B80563007FF5AB /* PanicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanicTests.swift; sourceTree = "<group>"; };
 		85A2F50D260C38BD00B8DCE6 /* Link-citeproc-rs.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Link-citeproc-rs.xcconfig"; sourceTree = "<group>"; };
 		85E4B4D2260D99E4001B9ED1 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		85E4B4E1260D9DA7001B9ED1 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
@@ -105,6 +109,8 @@
 			children = (
 				851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */,
 				852DD4B326B3E733002AED8D /* MemoryTests.swift */,
+				8583B29926B7F26F007FF5AB /* ClusterTests.swift */,
+				8583B29B26B80563007FF5AB /* PanicTests.swift */,
 				851A494A260AD10B00AD1322 /* Info.plist */,
 			);
 			path = CiteprocRsKitTests;
@@ -252,6 +258,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */,
+				8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */,
 				852DD4B426B3E733002AED8D /* MemoryTests.swift in Sources */,
 				851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */,
 			);
