@@ -77,10 +77,32 @@ func defaultDriver() throws -> CRDriver {
     return try CRDriver(style: defaultStyle, localeCallback: defaultLocaleCallback)
 }
 
+internal struct DebugLogger: CRLog {
+    func log(level: CRLogLevel, module_path: String, message: String) {
+        print("[\(level) \(module_path)] \(message)")
+    }
+}
+
+internal func setUpLogging() throws {
+    let filter = "citeproc_proc::db=debug"
+    do {
+        if #available(macOS 11, iOS 14, macCatalyst 14, *) {
+            try CRLogger.unifiedLogging(minSeverity: .warn, filter: filter)
+        } else {
+            try CRLogger.build(minSeverity: .warn, filter: filter, backend: DebugLogger())
+        }
+    } catch let e as CRError {
+        if e.code != CRErrorCode.setLogger {
+            throw e
+        }
+    }
+}
+
 class CiteprocRsKitTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        try setUpLogging()
     }
 
     override func tearDownWithError() throws {

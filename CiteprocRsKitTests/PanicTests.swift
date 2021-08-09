@@ -23,8 +23,8 @@ public func testDriverPanic(_ driver: CRDriver) throws -> () {
 }
 
 class PanicTests: XCTestCase {
-    override func setUp() {
-        citeproc_rs_log_init()
+    override func setUpWithError() throws {
+        try setUpLogging()
     }
     func testCatchesPanic() throws {
         do {

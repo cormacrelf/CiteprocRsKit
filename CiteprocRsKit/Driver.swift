@@ -23,7 +23,6 @@ public class CRDriver {
     private let outputFormat: CROutputFormat
 
     private init(raw: OpaquePointer, fetch_ctx: FFIUserData<FetchContext>, outputFormat: CROutputFormat) {
-        citeproc_rs_log_init();
         self.raw = raw
         // no longer mutable outside callback, but also don't read it. leave it alone!
         self.fetch_ctx = fetch_ctx

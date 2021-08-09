@@ -23,6 +23,7 @@ extension CRErrorCode: CustomStringConvertible {
         case .indexing: return "indexing"
         case .clusterNotInFlow: return "clusterNotInFlow"
         case .invalidStyle: return "invalidStyle"
+        case .setLogger: return "setLogger"
         @unknown default: return "unknown(error code \(self.rawValue))"
         }
     }

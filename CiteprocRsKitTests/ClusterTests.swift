@@ -26,7 +26,9 @@ class ClusterTests: XCTestCase {
     var driver: CRDriver? = nil
 
     override func setUpWithError() throws {
+        try setUpLogging()
         self.driver = try CRDriver(style: mkstyle(bibliography: style_bibliography))
+        
     }
 
     override func tearDownWithError() throws {

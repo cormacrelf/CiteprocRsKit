@@ -38,7 +38,7 @@ func localeFetchCallback(
             slot: slot, locale_xml: baseAddress, locale_xml_len: count)
     }) {
         if code != CRErrorCode.none {
-            if #available(macOS 11.0, iOS 10, *) {
+            if #available(macOS 11, iOS 14, macCatalyst 14, *) {
                 let logger = os.Logger()
                 let err = CRError.last_or_default(default: CRError.init(code, "unknown reason"))
                 logger.error("citeproc-rs: failed to write locale slot: \(err.message)")
