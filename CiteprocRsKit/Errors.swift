@@ -34,7 +34,7 @@ extension CRErrorCode: CustomDebugStringConvertible {
     }
 }
 
-public struct CRBindingsError: Error, Equatable {
+public struct CRError: Error, Equatable {
     public let code: CRErrorCode
     public let message: String
 
@@ -44,20 +44,15 @@ public struct CRBindingsError: Error, Equatable {
     }
 }
 
-extension CRBindingsError {
+extension CRError {
 
-    private static func with_display_text(code: CRErrorCode) -> CRBindingsError {
+    private static func with_display_text(code: CRErrorCode) -> CRError {
         var buffer = UTF8Buffer()
-        let write_err_err = Swift.withUnsafeMutablePointer(
-            to: &buffer,
-            { user_buf in
-                CiteprocRs.citeproc_rs_last_error_utf8(buffer_ops: BufferOps, user_data: user_buf)
-            })
+        let write_err_err = CiteprocRs.citeproc_rs_last_error_utf8(buffer_ops: UTF8Buffer.bufferOps, user_data: &buffer)
         if write_err_err != CRErrorCode.none {
             return .init(code, "error message could not be read, reading gave \(write_err_err)")
         }
-        let string = buffer.to_string()
-        return .init(code, string)
+        return .init(code, buffer.intoString())
     }
 
     internal static func from_last_error() -> Self? {
@@ -68,8 +63,8 @@ extension CRBindingsError {
         return Self.with_display_text(code: code)
     }
 
-    internal static func last_or_default(default _default: CRBindingsError = CRBindingsError.init(CRErrorCode.none, "unknown error")) -> Self {
-        if let err = CRBindingsError.from_last_error() {
+    internal static func last_or_default(default _default: CRError = .init(CRErrorCode.none, "unknown error")) -> Self {
+        if let err = CRError.from_last_error() {
             return err
         } else {
             return _default
@@ -82,7 +77,7 @@ extension CRBindingsError {
         if code == CRErrorCode.none {
             return
         }
-        if let err = CRBindingsError.from_last_error() {
+        if let err = CRError.from_last_error() {
             throw err
         }
     }

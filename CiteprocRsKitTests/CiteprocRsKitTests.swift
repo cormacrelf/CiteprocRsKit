@@ -26,9 +26,16 @@ func mklocale(lang: String, terms: String = "") -> String {
         </locale>
         """
 }
+
 func mkcitation(_ layout_inner: String = "") -> String {
     return """
         <citation><layout>\(layout_inner)</layout></citation>
+        """
+}
+
+func mkbibliography(_ layout_inner: String = "") -> String {
+    return """
+        <bibliography><layout>\(layout_inner)</layout></bibliography>
         """
 }
 
@@ -37,7 +44,7 @@ func mkstyle(
     style_class: String = "note",
     macros: String = "",
     citation: String = "<citation><layout><text variable=\"title\" /></layout></citation>",
-    bibliography: String = ""
+    bibliography: String = "<bibliography><layout><text variable=\"title\" font-style=\"italic\" /></layout></bibliography>"
 ) -> String {
     return """
         <style xmlns="http://purl.org/net/xbiblio/csl"
@@ -91,14 +98,14 @@ class CiteprocRsKitTests: XCTestCase {
         var error: String? = nil
         do {
             let _ = try CRDriver(style: mkstyle(citation: ""), localeCallback: { _ in nil }, outputFormat: .html)
-        } catch let e as CRBindingsError {
+        } catch let e as CRError {
             switch e.code {
             case .invalidStyle: error = e.message; break
             default: XCTFail("wrong error code, expected invalidStyle, got \(e)")
             }
         }
         XCTAssert(error != nil)
-        XCTAssert(error == "style error: invalid style: bytes 0..246 [Error] Must have exactly one <citation> ()\n")
+        XCTAssertEqual(error, "style error: invalid style: bytes 0..337 [Error] Must have exactly one <citation> ()\n")
     }
 
     func testLocaleFetch() throws {
@@ -121,13 +128,13 @@ class CiteprocRsKitTests: XCTestCase {
         let title = try driver.previewReference([
             "id": "refid", "type": "book", "title": "the title",
         ])
-        XCTAssertEqual(title, "the title")
+        XCTAssertEqual(title, "<i>the title</i>")
     }
 
     func testUsesLocale() throws {
         let style = mkstyle(
             default_locale: "en-GB",
-            citation: mkcitation(
+            bibliography: mkbibliography(
                 """
                     <text term="forthcoming" />
                 """))
@@ -142,13 +149,13 @@ class CiteprocRsKitTests: XCTestCase {
                             """)
                 })
         let output = try driver.previewReference(["id": "refid", "type": "book"])
-        XCTAssertEqual(output, "One moment chaps")
+        XCTAssertEqual(output, "one moment chaps")
     }
 
     func testAppliesOutputFormat() throws {
         let style = mkstyle(
             default_locale: "en-GB",
-            citation: mkcitation(
+            bibliography: mkbibliography(
                 """
                     <text font-style="italic" value="text" />
                 """))
@@ -168,7 +175,7 @@ class CiteprocRsKitTests: XCTestCase {
         do {
             // missing required id field
             try driver.insertReference([:])
-        } catch let e as CRBindingsError {
+        } catch let e as CRError {
             print(e)
             XCTAssertEqual(e.code, CRErrorCode.serdeJson)
         }

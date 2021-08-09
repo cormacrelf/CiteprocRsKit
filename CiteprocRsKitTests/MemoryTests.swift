@@ -49,7 +49,7 @@ class MemoryTests: XCTestCase {
 
     func testUserDataWhenRetained() throws {
         let signal = Signal()
-        var ud = Optional(FFIUserData.init(DropCk(signal: signal)))
+        var ud = Optional(FFIUserData(DropCk(signal: signal)))
         XCTAssertFalse(signal.notified)
         let raw = ud!.borrow()
         XCTAssertFalse(signal.notified)
@@ -67,7 +67,7 @@ class MemoryTests: XCTestCase {
 
     func testUserDataManyReconstructions() throws {
         let signal = Signal()
-        var ud = Optional(FFIUserData.init(DropCk(signal: signal)))
+        var ud = Optional(FFIUserData(DropCk(signal: signal)))
         XCTAssertFalse(signal.notified)
         let raw = ud!.borrow()
         XCTAssertFalse(signal.notified)
@@ -81,7 +81,7 @@ class MemoryTests: XCTestCase {
 
     func testUserDataDeinit() throws {
         let signal = Signal()
-        var ud = Optional(FFIUserData.init(DropCk(signal: signal)))
+        var ud = Optional(FFIUserData(DropCk(signal: signal)))
         let _ = ud?.borrow()
 
         // ud is still alive.

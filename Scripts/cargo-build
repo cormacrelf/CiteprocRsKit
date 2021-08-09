@@ -9,6 +9,8 @@ CARGO_TARGET_DIR=citeproc-rs/target
 CARGO_TOML=citeproc-rs/bindings/ffi/Cargo.toml
 LIBRARY_FILENAME=libciteproc_rs.a
 
+TESTABILITY_CARGO_FEATURE="testability"
+
 source Scripts/environment
 source Scripts/xcode-to-cargo
 

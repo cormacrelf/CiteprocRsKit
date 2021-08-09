@@ -15,6 +15,19 @@ if [[ "$CONFIGURATION" == "Release" ]]; then CARGO_PROFILE="release"; fi
 RELEASE_ARG=""
 if [[ "$CONFIGURATION" == "Release" ]]; then RELEASE_ARG="--release"; fi
 
+
+TESTABILITY_CARGO_FEATURE="${TESTABILITY_CARGO_FEATURE:-}"
+# default to empty array
+# old bash (3, 4) is SO BAD
+FEATURES=("${FEATURES[@]+"${FEATURES[@]}"}")
+
+if [[ "$ENABLE_TESTABILITY" == "YES" ]]; then
+  if ! [[ "$TESTABILITY_CARGO_FEATURE" == "" ]]; then
+    echo "setting testability feature: $TESTABILITY_CARGO_FEATURE"
+    FEATURES+=( $TESTABILITY_CARGO_FEATURE )
+  fi
+fi
+
 # jq runner
 function jq_go() {
   jq $JQ_ARGS "$JQ_FILTERS" $@
@@ -94,6 +107,11 @@ cargo_custom_target_build() {
   local TARGET="$3"
   local FILENAME="$4"
 
+  local FEATURES_ARG=""
+  if [ ${#FEATURES[@]} -ge 0 ]; then
+    FEATURES_ARG="--features=$(printf "%s," "${FEATURES[@]}")"
+  fi
+
   local JSON="Cargo/Targets/$TARGET.json"
   local TARGET_ARG="$TARGET"
   local BUILD_STD=""
@@ -103,7 +121,9 @@ cargo_custom_target_build() {
   fi
   local OUT_FILE="$CARGO_TARGET_DIR/$TARGET/$CARGO_PROFILE/$FILENAME"
   rm -f "$OUT_FILE"
-  cargo build $BUILD_STD --manifest-path "${PROJECT_DIR}/citeproc-rs/bindings/ffi/Cargo.toml" --target "$TARGET_ARG" $RELEASE_ARG
+  set -x
+  cargo build $BUILD_STD --manifest-path "${PROJECT_DIR}/citeproc-rs/bindings/ffi/Cargo.toml" --target "$TARGET_ARG" $RELEASE_ARG $FEATURES_ARG
+  set +x
   echo "$OUT_FILE"
 }
 
