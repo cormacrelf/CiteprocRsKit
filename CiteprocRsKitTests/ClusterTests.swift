@@ -11,23 +11,26 @@ import Foundation
 import XCTest
 import CiteprocRsKit
 
-let style_bibliography  = """
-    <bibliography>
-        <layout>
-            <group delimiter=", ">
-                <names variable="author" />
-                <text variable = "title" font-style="italic" />
-            </group>
-        </layout>
-    </bibliography>
-"""
-
 class ClusterTests: XCTestCase {
     var driver: CRDriver? = nil
 
     override func setUpWithError() throws {
         try setUpLogging()
-        self.driver = try CRDriver(style: mkstyle(bibliography: style_bibliography))
+        self.driver = try CRDriver(style: mkstyle(citation: mkcitation("""
+            <group delimiter=", ">
+                <text variable="title" />
+                <group delimiter=" ">
+                    <label variable="locator" form="short" />
+                    <text variable="locator" />
+                </group>
+            </group>
+            """), bibliography: mkbibliography("""
+            <group delimiter=", ">
+                <names variable="author" />
+                <text variable = "title" font-style="italic" />
+            </group>
+            """)
+        ))
         
     }
 
@@ -43,10 +46,11 @@ class ClusterTests: XCTestCase {
         try cite.setPrefix("prefix: ")
         try cite.setSuffix(" :suffix")
         try cite.setRefId("ref-1")
+        try cite.setLocator("56", locType: .page)
         let id = try driver.insertCluster(cluster);
         try driver.setClusterOrder(positions: [CRClusterPosition(id: id, noteNumber: 1)])
         let formatted = try driver.formatCluster(clusterId: id)
-        XCTAssertEqual(formatted, "prefix: Sparrows :suffix")
+        XCTAssertEqual(formatted, "prefix: Sparrows, p. 56 :suffix")
     }
     
     func testFormatBibliography() throws {

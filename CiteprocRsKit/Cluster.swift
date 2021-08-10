@@ -154,4 +154,16 @@ extension CRCiteHandle {
             try CRError.maybe_throw(returned: code)
         })
     }
+    
+    /// sets the locator for this cite
+    public func setLocator(_ locator: String, locType: CRLocatorType) throws {
+        var locator = locator
+        guard let clusterRaw = self.lifetime?.clusterRaw else {
+            throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
+        }
+        try locator.withUTF8Rust({ r, rLen in
+            let code = citeproc_rs_cluster_cite_set_locator(cluster: clusterRaw, cite_index: self.index, locator: r, locator_len: rLen, loc_type: locType)
+            try CRError.maybe_throw(returned: code)
+        })
+    }
 }

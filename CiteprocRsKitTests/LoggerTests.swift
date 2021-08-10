@@ -65,6 +65,23 @@ class LoggerTests: XCTestCase {
         ]);
     }
     
+    func testAppendLog2() throws {
+        try XCTSkipUnless(enable)
+        try CRLogger.install(minSeverity: CRLevelFilter.warn, filter: "", backend: testBackend)
+        
+        var saw: [(CRLogLevel, String, String)] = []
+        testBackend.closure = { level, module_path, message in
+            saw.append((level, module_path, message))
+        }
+        invokeLog(.warn, "warn only")
+        invokeLog(.debug, "debug only")
+        invokeLog(.error, "error should show up")
+        assertLog(actual: saw, expected: [
+            (.warn, "citeproc_rs::logger", "warn only"),
+            (.error, "citeproc_rs::logger", "error should show up")
+        ]);
+    }
+    
     @available(macOS 10.12, iOS 10, macCatalyst 13, *)
     func testOSLogLegacy() throws {
         try XCTSkipUnless(enable)

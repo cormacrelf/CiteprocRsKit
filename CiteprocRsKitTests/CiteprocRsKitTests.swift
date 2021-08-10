@@ -204,3 +204,8 @@ class CiteprocRsKitTests: XCTestCase {
     }
 
 }
+//func yeah() throws {
+//    let driver = try CiteprocRsKit.CRDriver(style: "", localeCallback: { s in nil }, outputFormat: .html);
+//    let cluster = driver.clusterHandle(0)
+//    let cite = try cluster.newCite(refId: "hello")
+//}
