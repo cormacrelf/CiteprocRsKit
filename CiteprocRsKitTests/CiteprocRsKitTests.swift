@@ -89,7 +89,7 @@ internal func setUpLogging() throws {
         if #available(macOS 11, iOS 14, macCatalyst 14, *) {
             try CRLogger.unifiedLogging(minSeverity: .warn, filter: filter)
         } else {
-            try CRLogger.build(minSeverity: .warn, filter: filter, backend: DebugLogger())
+            try CRLogger.install(minSeverity: .warn, filter: filter, backend: DebugLogger())
         }
     } catch let e as CRError {
         if e.code != CRErrorCode.setLogger {

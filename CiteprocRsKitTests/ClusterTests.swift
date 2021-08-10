@@ -44,7 +44,7 @@ class ClusterTests: XCTestCase {
         try cite.setSuffix(" :suffix")
         try cite.setRefId("ref-1")
         let id = try driver.insertCluster(cluster);
-        try driver.setClusterOrder(positions: [CRClusterPosition.init(id: id, noteNumber: 1)])
+        try driver.setClusterOrder(positions: [CRClusterPosition(id: id, noteNumber: 1)])
         let formatted = try driver.formatCluster(clusterId: id)
         XCTAssertEqual(formatted, "prefix: Sparrows :suffix")
     }
@@ -68,7 +68,7 @@ class ClusterTests: XCTestCase {
             try cluster.reset(newId: nextClusterId)
             let _ = try cluster.newCite(refId: refid)
             let _ = try driver.insertCluster(cluster)
-            document.append(CRClusterPosition(is_preview_marker: false, id: nextClusterId, is_note: false, note_number: 0))
+            document.append(CRClusterPosition(id: nextClusterId, noteNumber: nil))
             nextClusterId += 1
         }
         

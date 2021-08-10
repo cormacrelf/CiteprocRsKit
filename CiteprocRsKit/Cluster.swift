@@ -9,9 +9,11 @@ import Foundation
 import CiteprocRs
 
 extension CRClusterPosition {
+    /// An initialiser for a real cluster that's either in a footnote (a number) or in-text (nil)
     public init(id: CRClusterId, noteNumber: UInt32? = nil) {
         self.init(is_preview_marker: false, id: id, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
     }
+    /// An initialiser for a preview cluster. Only for use marking the preview placeholder's spot in a preview operation.
     public init(preview: (), noteNumber: UInt32? = nil) {
         self.init(is_preview_marker: true, id: 0, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
     }
