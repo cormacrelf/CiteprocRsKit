@@ -117,15 +117,9 @@ let SUBSYSTEM = "net.cormacrelf.CiteprocRsKit"
 
 @available(macOS 10.12, iOS 10, macCatalyst 13, *)
 public class CROSLogger: CRLog {
-    var loggers: [String: OSLog] = [:]
     public init() {}
     public func log(level: CRLogLevel, module_path: String, message: String) {
-        var _logger = self.loggers[module_path]
-        if _logger == nil {
-            _logger = OSLog(subsystem: SUBSYSTEM, category: module_path)
-            self.loggers[module_path] = _logger;
-        }
-        let logger = _logger!
+        let logger = OSLog(subsystem: SUBSYSTEM, category: module_path)
         os_log("[%{public}@] %{public}@", log: logger, type: level.osLogType(), level.description, message)
     }
 }
