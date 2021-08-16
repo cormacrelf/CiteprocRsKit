@@ -54,7 +54,10 @@ build() {
   set -euo pipefail
   rustup show
   carthage build --use-xcframeworks --no-skip-current --verbose
-  (cd Carthage/Build && zip -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework)
+  # see https://bugs.swift.org/browse/SR-14257, commment by @cormacrelf
+  # `zip -y` is the key here, it preserves the Versions/Current (etc) symlinks inside the frameworks.
+  # These otherwise cause `unzip` to fail and SwiftPM to give you "TSCBasic.StringError error 1".
+  (cd Carthage/Build && zip -y -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework)
 }
 
 checksum () {
