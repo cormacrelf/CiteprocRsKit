@@ -25,12 +25,21 @@ if ! command -v gh &>/dev/null; then
   bail "missing gh command (try \$ brew install gh; gh auth)"
 fi
 
+# constants
+DRAFT_TAG_999="v999.0.0-alpha.999"
+
+# variables
 SKIP_BUILD=false
 EXR=false
 EXISTING_RELEASE=""
 RELEASE=false
 TAG=""
 PUSH_BINARY_REPO=false
+BINARY_BRANCH=master
+IS_DRAFT=false
+BINARY_BRANCH=master
+RELEASE_DRAFT_FLAG=""
+FORCE_PUSH_BINARY=""
 
 parse_params() {
   while [[ "$#" > 0 ]]; do case $1 in
@@ -43,9 +52,17 @@ parse_params() {
     --release) RELEASE=true; shift;;
     --tag) TAG="$2"; shift 2;;
     --push-binary-repo) PUSH_BINARY_REPO=true; shift;;
+    --draft) IS_DRAFT=true; shift;;
     --|--help) bail "huh";;
     *) bail "Unknown parameter passed: $1";;
   esac; done
+  if $IS_DRAFT; then
+    BINARY_BRANCH=draft
+    TAG="$DRAFT_TAG_999"
+    RELEASE_TAG="$DRAFT_TAG_999"
+    FORCE_PUSH_BINARY="--force"
+  fi
+  if [ -z "$TAG" ]; then bail "empty tag. provide one with --tag TAG"; fi
 }
 
 parse_params $@
@@ -72,15 +89,28 @@ checksum () {
 
 push_binary_repo() {
   local TAG="$1"
-  local CHECKSUM="$2"
+  local RELEASE_TAG="$2"
+  local CHECKSUM="$3"
   local TMP="$(mktemp -d)"
   trap "rm -rf -- $TMP" EXIT
 
-  local DL=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+  local DL=$(gh api "/repos/cormacrelf/CiteprocRsKit/releases/tags/$RELEASE_TAG" -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+  # could dereference this locally, but this makes sure we pushed it somewhere
+  local RELEASE_SHA=$(gh api /repos/cormacrelf/CiteprocRsKit/commits/$TAG -q '.sha')
+
+  if [ -z "$DL" ]; then
+    bail "release asset not uploaded: $DL"
+  fi
+
+  if [ -z "$RELEASE_SHA" ]; then
+    bail "tag $TAG or commit referenced by tag $TAG was not uploaded to GitHub"
+  fi
 
   cd "$TMP"
   git clone https://github.com/cormacrelf/CiteprocRsKit-Binary.git --branch master
   cd CiteprocRsKit-Binary
+  # https://stackoverflow.com/a/26961416
+  git switch -c $BINARY_BRANCH
   cp -R "$DIR"/Scripts/BinaryPackage/* .
   sed \
     -e "s,XCFRAMEWORK_ZIP_URL,$DL,i" \
@@ -88,21 +118,18 @@ push_binary_repo() {
     < "$DIR/Scripts/BinaryPackage/Package.swift" \
     > "./Package.swift"
   git add .
-  # TODO add upstream sha
-  local GITHUB_SHA=TODO
-  git commit -m "release $TAG from $GITHUB_SHA" \
-             -m "https://github.com/cormacrelf/CiteprocRsKit/commit/$GITHUB_SHA"
-  git tag -f -a -m "release $TAG from $GITHUB_SHA" $TAG
+  git commit -m "release $TAG from $RELEASE_SHA" \
+             -m "https://github.com/cormacrelf/CiteprocRsKit/releases/tag/$TAG"
+  git tag -f -a -m "release $TAG from $RELEASE_SHA" $TAG
   echo $(pwd)
-  git push origin
-  git push --force --tags origin
+  git push $FORCE_PUSH_BINARY origin $BINARY_BRANCH
+  git push --force --tags
   cd "$DIR"
-  git pull --tags origin
 }
 
 upload() {
   set +e
-  gh release upload $1 Carthage/Build/CiteprocRsKit.xcframework.zip
+  gh release upload "$1" Carthage/Build/CiteprocRsKit.xcframework.zip
 }
 
 edit_release() {
@@ -125,14 +152,28 @@ else
 fi
 
 CHECKSUM=$(checksum)
-if $EXR; then
-  upload $EXISTING_RELEASE
-  edit_release $EXISTING_RELEASE $CHECKSUM
+
+if $IS_DRAFT; then
+  gh release delete "$RELEASE_TAG"
+  git push origin ":$TAG"
+  git tag -d "$TAG"
+  git tag -m 'draft/test release' "$TAG"
+  git push "$TAG"
+  RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
+  upload "$RELEASE_TAG"
+elif $EXR; then
+  RELEASE_TAG="$EXISTING_RELEASE"
+  upload "$RELEASE_TAG"
+  edit_release "$RELEASE_TAG" "$CHECKSUM"
 elif $RELEASE; then
-  gh release create $TAG -n "Checksum: $CHECKSUM"
-  upload $TAG
+  RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
+  upload "$RELEASE_TAG"
 fi
 
 if $PUSH_BINARY_REPO && ! [ -z "$TAG" ]; then
-  push_binary_repo $TAG $CHECKSUM
+  if [ -z "${RELEASE_TAG:-}" ]; then
+    bail "release tag unspecified"
+  fi
+
+  push_binary_repo "$TAG" "$RELEASE_TAG" "$CHECKSUM"
 fi
