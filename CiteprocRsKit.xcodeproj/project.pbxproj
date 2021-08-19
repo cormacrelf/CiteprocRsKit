@@ -17,6 +17,7 @@
 		853851B726C16AF400EDBDE0 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853851B626C16AF400EDBDE0 /* Logger.swift */; };
 		853851B926C1704600EDBDE0 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853851B826C1704600EDBDE0 /* LoggerTests.swift */; };
 		854805C026B86814000E2E55 /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854805BF26B86814000E2E55 /* Cluster.swift */; };
+		854CF4A626CAD5EE00363E4B /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = 854CF4A526CAD5EE00363E4B /* Documentation.docc */; };
 		857D733C26B1320100C34654 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857D733B26B1320100C34654 /* Buffer.swift */; };
 		8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29926B7F26F007FF5AB /* ClusterTests.swift */; };
 		8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29B26B80563007FF5AB /* PanicTests.swift */; };
@@ -53,6 +54,7 @@
 		853851B626C16AF400EDBDE0 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		853851B826C1704600EDBDE0 /* LoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTests.swift; sourceTree = "<group>"; };
 		854805BF26B86814000E2E55 /* Cluster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
+		854CF4A526CAD5EE00363E4B /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
 		856B441926086D410088EBFC /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		857D733B26B1320100C34654 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		8583B29926B7F26F007FF5AB /* ClusterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterTests.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				85E4B4E4260D9E1A001B9ED1 /* Debug.xcconfig */,
 				85E4B4E1260D9DA7001B9ED1 /* Common.xcconfig */,
 				85E4B4D2260D99E4001B9ED1 /* Release.xcconfig */,
+				854CF4A526CAD5EE00363E4B /* Documentation.docc */,
 			);
 			path = CiteprocRsKit;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 				852DD4B026B154BC002AED8D /* Errors.swift in Sources */,
 				851A4955260AD12300AD1322 /* Driver.swift in Sources */,
 				854805C026B86814000E2E55 /* Cluster.swift in Sources */,
+				854CF4A626CAD5EE00363E4B /* Documentation.docc in Sources */,
 				857D733C26B1320100C34654 /* Buffer.swift in Sources */,
 				853851B726C16AF400EDBDE0 /* Logger.swift in Sources */,
 				852DD4AE26B15497002AED8D /* FetchContext.swift in Sources */,

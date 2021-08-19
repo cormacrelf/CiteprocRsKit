@@ -9,13 +9,16 @@ import CiteprocRs
 import CoreText
 import Foundation
 
+/// .html, .rtf, .plain
 public typealias CROutputFormat = CiteprocRs.CROutputFormat
+///
 public typealias CRErrorCode = CiteprocRs.CRErrorCode
-public typealias CRClusterId = CiteprocRs.CRClusterId
+//public typealias CRClusterId = CiteprocRs.CRClusterId
 public typealias CRClusterPosition = CiteprocRs.CRClusterPosition
 
 // Lifecycle
 
+/// The central API for interacting with CiteprocRsKit.
 public class CRDriver {
     internal let raw: OpaquePointer
     private let fetch_ctx: FFIUserData<FetchContext>
@@ -30,8 +33,15 @@ public class CRDriver {
         self.outputFormat = outputFormat
     }
     
+    /// Create a driver for an XML style.
+    ///
+    /// You provide:
+    /// - A valid XML style
+    /// - A way for the driver to ask for XML locales by language ID (e.g. `"en-GB"`),
+    ///   where the default results in every locale being indistinguishable from `en-US`.
+    /// - And an output format of your choice, default `.html`.
     public convenience init(style: String,
-                localeCallback: @escaping (String) -> String? = { _ in nil },
+                            localeCallback: @escaping (_ langId: String) -> String? = { _ in nil },
                 outputFormat: CROutputFormat = CROutputFormat.html) throws {
 
         let fetch_context = FFIUserData(FetchContext(locale_callback: localeCallback))
@@ -68,9 +78,9 @@ public class CRDriver {
     }
 }
 
-// References
-
 extension CRDriver {
+    
+    /// Shows what a reference would look like if rendered in a bibliography. The reference must have an `"id"` field but it will not be used.
     public func previewReference(_ reference: Any, format: CROutputFormat? = nil) throws -> String {
         let ref_json: Data = try JSONSerialization.data(withJSONObject: reference)
         let code = ref_json.withCharPointerLen({ buf, bufLen in
@@ -84,6 +94,7 @@ extension CRDriver {
         return buffer.takeString()
     }
 
+    /// Add a Reference to the Driver.
     public func insertReference(_ reference: Any) throws {
         let ref_json: Data = try JSONSerialization.data(withJSONObject: reference)
         let code = ref_json.withCharPointerLen({ buf, buf_len in
@@ -93,18 +104,21 @@ extension CRDriver {
         try CRError.maybe_throw(returned: code)
     }
     
+    /// Concatenates all the bibliography entries into one string.
     public func formatBibliography() throws -> String {
         let code = CiteprocRs.citeproc_rs_driver_format_bibliography(driver: self.raw, user_buf: &self.buffer)
         try CRError.maybe_throw(returned: code)
         return buffer.takeString()
     }
     
+    /// Formats a single citation cluster.
     public func formatCluster(clusterId: CRClusterId) throws -> String {
         let code = CiteprocRs.citeproc_rs_driver_format_cluster(driver: self.raw, cluster_id: clusterId, user_buf: &self.buffer)
         try CRError.maybe_throw(returned: code)
         return buffer.takeString()
     }
     
+    /// Tell the driver how your document is structured.
     public func setClusterOrder(positions: [CRClusterPosition]) throws {
         let len = UInt(positions.count)
         let code = CiteprocRs.citeproc_rs_driver_set_cluster_order(driver: self.raw, positions: positions, positions_len: len)
