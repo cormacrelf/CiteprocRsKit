@@ -41,16 +41,22 @@ class ClusterTests: XCTestCase {
     func testCreate() throws {
         let driver = self.driver!
         try driver.insertReference(["id": "ref-1", "type": "book", "title": "Sparrows"])
+        var document: [CRClusterPosition] = []
         let cluster = try driver.clusterHandle("cluster-1")
-        let cite = try cluster.newCite(refId: "nonexistent-ref")
-        try cite.setPrefix("prefix: ")
-        try cite.setSuffix(" :suffix")
-        try cite.setRefId("ref-1")
-        try cite.setLocator("56", locType: .page)
-        let id = try driver.insertCluster(cluster);
-        try driver.setClusterOrder(positions: [CRClusterPosition(id: id, noteNumber: 1)])
-        let formatted = try driver.formatCluster(clusterId: id)
-        XCTAssertEqual(formatted, "prefix: Sparrows, p. 56 :suffix")
+        try cluster.appendCite(CRCite(refId: "ref-1", prefix: "prefix: ", suffix: " :suffix", locator: ("56", .chapter)))
+        try driver.insertCluster(cluster)
+        document.append(.init(id: cluster.id, noteNumber: 1))
+        try driver.setClusterOrder(positions: document)
+        var formatted = try driver.formatCluster(clusterId: cluster.id)
+        XCTAssertEqual(formatted, "prefix: Sparrows, chap. 56 :suffix")
+        
+        try cluster.reset("cluster-2")
+        try cluster.appendCite(refId: "nonexistent")
+        try driver.insertCluster(cluster)
+        document.append(.init(id: cluster.id, noteNumber: 1))
+        try driver.setClusterOrder(positions: document)
+        formatted = try driver.formatCluster(clusterId: cluster.id)
+        XCTAssertEqual(formatted, "???")
     }
     
     func testFormatBibliography() throws {
@@ -67,21 +73,35 @@ class ClusterTests: XCTestCase {
         }
         
         var nextClusterId = CRClusterId(0) // we'll reset the handle before we use the zero id
-        let cluster = try driver.clusterHandle(nextClusterId)
+        let cluster = try driver.clusterHandle(0)
         for refid in refids {
             try cluster.reset(newId: nextClusterId)
-            let _ = try cluster.newCite(refId: refid)
-            let _ = try driver.insertCluster(cluster)
+            let _ = try cluster.appendCite(refId: refid)
+            try cluster.appendCite(CRCite(refId: "ref-2", prefix: "{, and also}"))
+            try driver.insertCluster(cluster)
             document.append(CRClusterPosition(id: nextClusterId, noteNumber: nil))
             nextClusterId += 1
         }
         
         try driver.setClusterOrder(positions: document)
+        print(try driver.formatCluster(clusterId: cluster.id))
         let biblio = try driver.formatBibliography()
         XCTAssertEqual(biblio, """
         John Smith, <i>A Flight of Sparrows</i>
         John Smith, <i>Seminal works, and how to write them</i>
         
         """)
+    }
+    
+    func testResetHandleString() throws {
+        var driver = Optional(try defaultDriver())
+        let handle = try driver?.clusterHandle(0)
+        driver = nil
+        do {
+            try handle!.reset("hello")
+            XCTFail("should not reach; ")
+        } catch {
+            // done
+        }
     }
 }

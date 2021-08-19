@@ -10,45 +10,36 @@ See [`citeproc-rs`][rs] for more information.
 
 ## Topics
 
-### Getting Started
+### Fundamentals
+
+`CRDriver` is the main set of APIs.
 
 - ``CRDriver``
 - ``CROutputFormat``
 
 ### Error handling
 
-Note also that nearly every operation in the entire library is explicitly `throws`;
+Nearly every operation in the entire library is explicitly `throws`; this means even the smallest error on the FFI boundary results in a stack trace.
+Notably, every panic that unwinds to the FFI boundary is caught and thrown as a Swift exception, with the backtrace logged to your logger of choice.
 
 - ``CRError``
 - ``CRErrorCode``
 
-### References
-
-References describe a book/article/legal case/etc, and its metadata.
-
-Here, they are Swift objects that can be converted to JSON that matches the schema for a single [CSL-JSON "csl-data"][csl-data] object. So they must have an `"id"` field, may contain a type, and thereafter any number of CSL variables with values in the shape required.
-
-[csl-data]: https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
-
-- ``CRDriver/previewReference(_:format:)``
-- ``CRDriver/insertReference(_:)``
-
 ### Citation clusters
 
-A cluster is a list of cites, identified with either a string or a `UInt32`. Each cite contains a string that should match one of the References known to the Driver.
+A cluster is a list of cites. Each cite contains a string that should match one of the References known to the Driver. The cluster as a whole is identified with either a string or a `UInt32`. 
 
-See also: ``CRDriver/insertCluster(_:)``, and ClusterId-related methods ``CRDriver/internClusterId(_:)``, ``CRDriver/clusterHandle(_:)-3dou5``, ``CRDriver/clusterHandle(_:)-61ejz``
+See also: ``CRDriver/insertCluster(_:)``, and other methods on ``CRDriver``.
 
 - ``CRClusterHandle``
-- ``CRCiteHandle``
 - ``CRClusterId``
+- ``CRCite``
 
 ### Document flow
 
-Where in the document are all these clusters? What order do they appear? Are some in footnotes?
+Where in the document are all these clusters?
 
 - ``CRClusterPosition``
-- ``CRDriver/setClusterOrder(positions:)``
 
 ### Logging
 
@@ -56,6 +47,6 @@ CiteprocRsKit is capable of forwarding all of `citeproc-rs`' logs to the destina
 
 - ``CRLog``
 - ``CRLogger``
+- ``CROSLogger``
 - ``CRLogLevel``
 - ``CRLevelFilter``
-- ``CROSLogger``

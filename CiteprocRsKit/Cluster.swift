@@ -8,14 +8,47 @@
 import Foundation
 import CiteprocRs
 
-extension CRClusterPosition {
+internal typealias RawPosition = CiteprocRs.CRClusterPosition;
+
+// These are transparent structs. We can safely "transmute" pointers to arrays of it.
+// As noted in [SE-0260](https://github.com/apple/swift-evolution/blob/main/proposals/0260-library-evolution.md):
+//
+// > The run-time memory layout of a struct with a single field is always identical
+// > to the layout of the instance property on its own, whether the struct is
+// > declared @frozen or not. This has been true since Swift 1. (This does not
+// > extend to the calling convention, however. If the struct is not frozen, it will
+// > be passed indirectly even if its single field is frozen and thus can be passed
+// > directly)
+
+/// A cluster position for use in ``CRDriver/setClusterOrder(positions:)``
+public struct CRClusterPosition {
+    // crucial: only one field
+    internal let raw: RawPosition
+    
     /// An initialiser for a real cluster that's either in a footnote (a number) or in-text (nil)
     public init(id: CRClusterId, noteNumber: UInt32? = nil) {
-        self.init(is_preview_marker: false, id: id, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
+        self.raw = RawPosition.init(is_preview_marker: false, id: id, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
     }
+}
+
+
+/// A cluster position for use in a future `previewCitationCluster`-esque API.
+internal struct CRClusterPreviewPosition {
+    // crucial: only one field
+    internal let raw: RawPosition
+
+    private init(preview: (), noteNumber: UInt32? = nil) {
+        self.raw = RawPosition.init(is_preview_marker: true, id: 0, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
+    }
+    
+    /// An initialiser for a real cluster that's either in a footnote (a number) or in-text (nil)
+    public init(id: CRClusterId, noteNumber: UInt32? = nil) {
+        self.raw = RawPosition.init(is_preview_marker: false, id: id, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
+    }
+    
     /// An initialiser for a preview cluster. Only for use marking the preview placeholder's spot in a preview operation.
-    public init(preview: (), noteNumber: UInt32? = nil) {
-        self.init(is_preview_marker: true, id: 0, is_note: noteNumber != nil, note_number: noteNumber ?? 0)
+    public static func preview(noteNumber: UInt32? = nil) -> Self {
+        .init(preview: (), noteNumber: noteNumber)
     }
 }
 
@@ -25,36 +58,78 @@ extension CRClusterPosition {
 /// * The completed handle is submitted to `CRDriver.insertCluster(_ cluster:)`
 /// * The handle can then be reused to submit more clusters, by resetting it via `CRClusterHandle.reset(newId:)`
 public class CRClusterHandle {
-    internal init(pointer: OpaquePointer, id: CRClusterId) {
+    internal init(driverRef: CRDriver, pointer: OpaquePointer, id: CRClusterId) {
         self.clusterRaw = pointer
         self.citeLifetime = CRCiteLifetime(clusterPointer: pointer)
         self.id = id
+        self.driverRef = driverRef
     }
     
     public fileprivate(set) var id: CRClusterId
     fileprivate let clusterRaw: OpaquePointer
     fileprivate var citeLifetime: CRCiteLifetime
+    weak var driverRef: CRDriver?
     
-    internal convenience init(id: CRClusterId) throws {
-        let maybe = citeproc_rs_cluster_new(id: id) as OpaquePointer?
-        guard let ptr = maybe else {
-            throw CRError.last_or_default()
+    /// Create a cluster handle, either uninitialised or initialised with a specific cluster ID.
+    ///
+    /// To initialise a handle which doesn't yet have an ID, use ``CRClusterHandle/reset(newId:)``
+    internal convenience init(driverRef: CRDriver, id: CRClusterId) throws {
+        // we'll give it a value of zero if there's no id yet.
+        let ptr = citeproc_rs_cluster_new(id: id)
+        if ptr == nil {
+            throw CRError.from_last_error() ?? CRError(.nullPointer, "Null pointer returned from citeproc_rs_cluster_new, probably OOM")
         }
-        self.init(pointer: ptr, id: id)
+        self.init(driverRef: driverRef, pointer: ptr!, id: id)
     }
     
     deinit {
         citeproc_rs_cluster_free(cluster: self.clusterRaw)
     }
+    
+    /// CRClusterHandle is reusable. This clears the storage but keeps the allocations used for transferring data over FFI.
+    private func _reset(_ newId: CRClusterId) throws {
+        // invalidate all the cite handles
+        self.citeLifetime = CRCiteLifetime(clusterPointer: self.clusterRaw)
+        self.id = newId
+        let code = citeproc_rs_cluster_reset(cluster: self.clusterRaw, new_id: newId)
+        try CRError.maybe_throw(returned: code)
+    }
+
+    /// CRClusterHandle is reusable. This clears the storage but keeps the allocations used for transferring data over FFI.
+    public func reset(newId: CRClusterId) throws {
+        try self._reset(newId)
+    }
+    
+    /// CRClusterHandle is reusable. This clears the storage but keeps the allocations used for transferring data over FFI.
+    public func reset(_ stringId: String) throws {
+        guard let driver = self.driverRef else {
+            throw CRError.init(.nullPointer, "Cannot intern a string in CRClusterHandle.reset if the associated driver has been deallocated")
+        }
+        let newId = try driver.internClusterId(stringId)
+        try self._reset(newId)
+    }
 }
 
 extension CRDriver {
-    public func insertCluster(_ cluster: CRClusterHandle) throws -> CRClusterId {
-        let code = CiteprocRs.citeproc_rs_driver_insert_cluster(driver: self.raw, cluster: cluster.clusterRaw)
-        try CRError.maybe_throw(returned: code)
-        return cluster.id
+    
+    /// Obtain a cluster handle for a specific cluster ID.
+    public func clusterHandle(_ id: CRClusterId) throws -> CRClusterHandle {
+        return try CRClusterHandle(driverRef: self, id: id)
     }
     
+    /// Obtain a cluster handle for an **interned string ID**.
+    public func clusterHandle(_ stringId: String) throws -> CRClusterHandle {
+        let id = try self.internClusterId(stringId)
+        return try CRClusterHandle(driverRef: self, id: id)
+    }
+    
+    /// Inserts a cluster whose ID is the one contained in the handle. This will overwrite any existing cluster with the same ID.
+    public func insertCluster(_ cluster: CRClusterHandle) throws {
+        let code = CiteprocRs.citeproc_rs_driver_insert_cluster(driver: self.raw, cluster: cluster.clusterRaw)
+        try CRError.maybe_throw(returned: code)
+    }
+    
+    /// Takes a string, and gives you a new ID to use in its place. The ID can be any number, so do not use in conjunction with explicitly constructed, numbered ``CRClusterId``s,
     public func internClusterId(_ stringId: String) throws -> CRClusterId {
         // copy :( because withUTF8 mutates, especially often with small strings.
         var stringId = stringId
@@ -68,35 +143,22 @@ extension CRDriver {
         })
     }
     
-    public func clusterHandle(_ stringId: String) throws -> CRClusterHandle {
-        let id = try self.internClusterId(stringId)
-        return try self.clusterHandle(id)
+    /// Pick a nice cluster ID out of thin air, and return its integer and string forms. You can use this to generate permanent IDs to be stored in a document somewhere.
+    public func randomClusterId() throws -> (CRClusterId, String) {
+        let id = citeproc_rs_driver_random_cluster_id(driver: self.raw, user_buf: &self.buffer)
+        if id < 0 {
+            throw CRError.from_last_error() ?? CRError.init(CRErrorCode.none, "unknown error")
+        }
+        return (.init(UInt32(id)), self.buffer.takeString())
     }
     
-    
-    public func clusterHandle(_ id: CRClusterId) throws -> CRClusterHandle {
-        return try CRClusterHandle(id: id)
-    }
-}
-
-
-private class CRCiteLifetime {
-    internal init(clusterPointer: OpaquePointer) {
-        self.clusterRaw = clusterPointer
-    }
-    
-    let clusterRaw: OpaquePointer
-}
-
-public struct CRCiteHandle {
-    fileprivate let index: UInt
-    fileprivate weak var lifetime: CRCiteLifetime?
 }
 
 extension CRClusterHandle {
+    
     /// Returns a cite handle, which can be used to add information to the cite.
     /// The cite handle is invalidated if the CRClusterHandle is dropped or is reset, so discard any cites handles after doing either.
-    public func newCite(refId: String) throws -> CRCiteHandle {
+    private func newCite(refId: String) throws -> CRCiteHandle {
         var refId = refId
         return try refId.withUTF8Rust({ ref, refLen in
             let idx = citeproc_rs_cluster_cite_new(cluster: self.clusterRaw, ref_id: ref, ref_id_len: refLen)
@@ -108,19 +170,36 @@ extension CRClusterHandle {
         })
     }
     
-    /// CRClusterHandle is reusable. This clears the storage but keeps the allocations used for transferring data over FFI.
-    public func reset(newId: CRClusterId) throws {
-        // invalidate all the cite handles
-        self.citeLifetime = CRCiteLifetime(clusterPointer: self.clusterRaw)
-        self.id = newId
-        let code = citeproc_rs_cluster_reset(cluster: self.clusterRaw, new_id: newId)
-        try CRError.maybe_throw(returned: code)
+    /// Append a new, simple cite to the cluster. No affixes or locator.
+    public func appendCite(refId: String) throws {
+        let _ = try self.newCite(refId: refId)
     }
+    
+    /// Append a new cite to the cluster.
+    public func appendCite(_ citeData: CRCite) throws {
+        let handle = try self.newCite(refId: citeData.refId)
+        if let p = citeData.prefix  { try handle.setPrefix(p) }
+        if let s = citeData.suffix  { try handle.setSuffix(s) }
+        if let (l, t) = citeData.locator { try handle.setLocator(l, locType: t) }
+    }
+}
+
+private class CRCiteLifetime {
+    internal init(clusterPointer: OpaquePointer) {
+        self.clusterRaw = clusterPointer
+    }
+    
+    let clusterRaw: OpaquePointer
+}
+
+fileprivate struct CRCiteHandle {
+    fileprivate let index: UInt
+    fileprivate weak var lifetime: CRCiteLifetime?
 }
 
 extension CRCiteHandle {
     /// sets the cite prefix
-    public func setPrefix(_ prefix: String) throws {
+    fileprivate func setPrefix(_ prefix: String) throws {
         var prefix = prefix
         guard let clusterRaw = self.lifetime?.clusterRaw else {
             throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
@@ -132,7 +211,7 @@ extension CRCiteHandle {
     }
     
     /// sets the cite suffix
-    public func setSuffix(_ suffix: String) throws {
+    fileprivate func setSuffix(_ suffix: String) throws {
         var suffix = suffix
         guard let clusterRaw = self.lifetime?.clusterRaw else {
             throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
@@ -144,7 +223,7 @@ extension CRCiteHandle {
     }
     
     /// sets the reference pointed to by this cite
-    public func setRefId(_ refId: String) throws {
+    fileprivate func setRefId(_ refId: String) throws {
         var refId = refId
         guard let clusterRaw = self.lifetime?.clusterRaw else {
             throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
@@ -156,7 +235,7 @@ extension CRCiteHandle {
     }
     
     /// sets the locator for this cite
-    public func setLocator(_ locator: String, locType: CRLocatorType) throws {
+    fileprivate func setLocator(_ locator: String, locType: CRLocatorType) throws {
         var locator = locator
         guard let clusterRaw = self.lifetime?.clusterRaw else {
             throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
@@ -165,5 +244,39 @@ extension CRCiteHandle {
             let code = citeproc_rs_cluster_cite_set_locator(cluster: clusterRaw, cite_index: self.index, locator: r, locator_len: rLen, loc_type: locType)
             try CRError.maybe_throw(returned: code)
         })
+    }
+}
+
+/// A convenient struct to hold details of a single cite within a cluster.
+public struct CRCite: Equatable, Hashable {
+    
+    public init(refId: String, prefix: String? = nil, suffix: String? = nil, locator: (String, CRLocatorType)? = nil) {
+        self.refId = refId
+        self.prefix = prefix
+        self.suffix = suffix
+        self.locator = locator
+    }
+    
+    var refId: String
+    var prefix: String?
+    var suffix: String?
+    var locator: (String, CRLocatorType)?
+    
+    public static func == (lhs: CRCite, rhs: CRCite) -> Bool {
+        lhs.refId == rhs.refId
+        && lhs.prefix == rhs.prefix
+        && lhs.suffix == rhs.suffix
+        && lhs.locator?.0 == rhs.locator?.0
+        && lhs.locator?.1 == rhs.locator?.1
+    }
+    
+    public func hash(into: inout Hasher) {
+        into.combine(refId)
+        into.combine(prefix)
+        into.combine(suffix)
+        if let locator = locator {
+            into.combine(locator.0)
+            into.combine(locator.1)
+        }
     }
 }

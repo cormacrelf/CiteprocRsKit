@@ -9,12 +9,18 @@ import CiteprocRs
 import CoreText
 import Foundation
 
-/// .html, .rtf, .plain
-public typealias CROutputFormat = CiteprocRs.CROutputFormat
+/// Enum, format to write output in: .html, .rtf, .plain
 ///
+/// The enum variants are not viewable in documentation due to this being a re-export from a C header.
+public typealias CROutputFormat = CiteprocRs.CROutputFormat
+
+/// Enum, error code directly from citeproc-rs' ffi layer (.nullPointer, .caughtPanic, .serdeJson, etc).
+///
+/// The enum variants are not viewable in documentation due to this being a re-export from a C header.
 public typealias CRErrorCode = CiteprocRs.CRErrorCode
-//public typealias CRClusterId = CiteprocRs.CRClusterId
-public typealias CRClusterPosition = CiteprocRs.CRClusterPosition
+
+/// An integer (`UInt32`) representation of a cluster ID.
+public typealias CRClusterId = CiteprocRs.CRClusterId
 
 // Lifecycle
 
@@ -120,8 +126,13 @@ extension CRDriver {
     
     /// Tell the driver how your document is structured.
     public func setClusterOrder(positions: [CRClusterPosition]) throws {
-        let len = UInt(positions.count)
-        let code = CiteprocRs.citeproc_rs_driver_set_cluster_order(driver: self.raw, positions: positions, positions_len: len)
+        let code: CRErrorCode = positions.withUnsafeBufferPointer({ pointer in
+            return pointer.withMemoryRebound(to: RawPosition.self, { transmutedPointer in
+                let base = transmutedPointer.baseAddress
+                let len = UInt(transmutedPointer.count)
+                return CiteprocRs.citeproc_rs_driver_set_cluster_order(driver: self.raw, positions: base, positions_len: len)
+            })
+        })
         try CRError.maybe_throw(returned: code)
     }
 }

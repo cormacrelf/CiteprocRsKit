@@ -35,6 +35,7 @@ extension CRErrorCode: CustomDebugStringConvertible {
     }
 }
 
+/// Holds an error code and an error message, usually from `citeproc-rs`' end, but sometimes generated in the Swift bindings.
 public struct CRError: Error, Equatable {
     public let code: CRErrorCode
     public let message: String

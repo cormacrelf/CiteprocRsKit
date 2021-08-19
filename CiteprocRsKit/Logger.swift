@@ -9,7 +9,9 @@ import Foundation
 import CiteprocRs
 import os
 
+/// `.error = 1, .warn, .info, .debug, .trace`: Log severity levels from the Rust [`log` crate](https://lib.rs/crates/log).
 public typealias CRLogLevel = CiteprocRs.CRLogLevel
+/// `.off, .error, .warn, .info, .debug, .trace`: Log level filters from the Rust [`log` crate](https://lib.rs/crates/log). `.off` means "no logs should be logged"; `.warn` means "errors and warnings should be logged".
 public typealias CRLevelFilter = CiteprocRs.CRLevelFilter
 
 func log_backend_write(instance: UnsafeMutableRawPointer?, level: CRLogLevel, modpath: UnsafePointer<UInt8>?, modpath_len: UInt, msg: UnsafePointer<UInt8>?, msg_len: UInt) {
@@ -34,6 +36,7 @@ let vtable: CRFFILoggerVTable = CRFFILoggerVTable(
 );
 
 
+///  A logging backend to install globally, that citeproc-rs will use for all its logging. You can only install a logger once.
 public struct CRLogger {
     fileprivate init(minSeverity: CRLevelFilter, filter: String = "", backend: CRLog) throws {
         self.minSeverity = minSeverity
@@ -77,6 +80,9 @@ public struct CRLogger {
     }
 }
 
+/// A protocol for logging implementations that can print (or ignore) a a message logged via the Rust [`log` crate](https://lib.rs/crates/log).
+///
+/// The simplest non-trivial implementation would be to simply `print(level, module_path, message)`.
 public protocol CRLog {
     /// In order, these three are ERROR/WARN/etc, then a citeproc_proc::db::... path of where the log was generated, and a message.
     func log(level: CRLogLevel, module_path: String, message: String) -> Void
@@ -95,7 +101,7 @@ class CRLogReceiver {
     }
 }
 
-let SUBSYSTEM = "net.cormacrelf.CiteprocRsKit"
+internal let SUBSYSTEM = "net.cormacrelf.CiteprocRsKit"
 
 // No need. Functionality is covered by the os_log version
 //
@@ -115,6 +121,7 @@ let SUBSYSTEM = "net.cormacrelf.CiteprocRsKit"
 //    }
 //}
 
+/// A logger that uses the Unified Logging system introduced in 2016.
 @available(macOS 10.12, iOS 10, macCatalyst 13, *)
 public class CROSLogger: CRLog {
     public init() {}
@@ -125,6 +132,7 @@ public class CROSLogger: CRLog {
 }
 
 extension CRLogLevel {
+    /// A reasonable conversion from the Rust `log` crate's level to `os.OSLogType` levels.
     public func osLogType() -> OSLogType {
         switch self {
         case .trace: fallthrough
