@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+CLEAR='\033[0m'
+RED='\033[0;31m'
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$DIR/.." && pwd )"
+cd "$DIR"
+
+XCODE_VERSION=$(xcrun xcodebuild -version | head -n1 | cut -d' ' -f2 | cut -d. -f1)
+if ! [ "$XCODE_VERSION" -ge 13 ]; then
+  echo "${RED}error: Xcode 13+ required to generate DocC archives.${CLEAR}"
+  exit 1
+fi
+
+TMP_NETLIFY=/tmp/CiteprocRsKit-netlify
+
+XCPRETTY="cat"
+if command -v xcpretty &>/dev/null; then XCPRETTY="xcpretty"; fi
+
+TMP="$(mktemp -d)"
+trap "rm -rf -- $TMP" EXIT
+xcodebuild -project CiteprocRsKit.xcodeproj -scheme CiteprocRsKit -derivedDataPath "$TMP" docbuild | $XCPRETTY
+BUILT="$TMP/Build/Products/Debug/CiteprocRsKit.doccarchive"
+
+# store the latest version tag for the commit message
+LATEST_TAG=$(git describe --tags --abbrev=0)
+LATEST_COMMIT=$(git rev-parse --short HEAD)
+
+if ! [ -d "$TMP_NETLIFY" ]; then
+  git worktree add $TMP_NETLIFY netlify
+fi
+cd $TMP_NETLIFY
+git switch -C netlify
+git co .
+git pull || (echo -e "warning: no branch netlify on remote, will create on remote 'origin'\n" && git remote -v | grep origin)
+
+# clean out whatever's there
+rm -rf *
+# write out everything inside the doccarchive
+cp -R "$BUILT"/* .
+
+# transform for Netlify, DocC is a single page app apparently so we need some redirects etc
+cp "$DIR/Scripts/Resources/netlify"/* .
+
+git add .
+git commit -m "update netlify from lates tag $LATEST_TAG, latest commit $LATEST_COMMIT"
+git push -u origin netlify

@@ -1,0 +1,5 @@
+/ /documentation/CiteprocRsKit 301!
+/documentation /documentation/CiteprocRsKit
+
+/documentation/* /index.html 200!
+/tutorial/* /index.html 200!
