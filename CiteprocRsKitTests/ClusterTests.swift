@@ -43,7 +43,7 @@ class ClusterTests: XCTestCase {
         try driver.insertReference(["id": "ref-1", "type": "book", "title": "Sparrows"])
         var document: [CRClusterPosition] = []
         let cluster = try driver.clusterHandle("cluster-1")
-        try cluster.appendCite(CRCite(refId: "ref-1", prefix: "prefix: ", suffix: " :suffix", locator: ("56", .chapter)))
+        try cluster.append(CRCite(refId: "ref-1", prefix: "prefix: ", suffix: " :suffix", locator: ("56", .chapter)))
         try driver.insertCluster(cluster)
         document.append(.init(id: cluster.id, noteNumber: 1))
         try driver.setClusterOrder(positions: document)
@@ -51,7 +51,7 @@ class ClusterTests: XCTestCase {
         XCTAssertEqual(formatted, "prefix: Sparrows, chap. 56 :suffix")
         
         try cluster.reset("cluster-2")
-        try cluster.appendCite(refId: "nonexistent")
+        try cluster.append(refId: "nonexistent")
         try driver.insertCluster(cluster)
         document.append(.init(id: cluster.id, noteNumber: 1))
         try driver.setClusterOrder(positions: document)
@@ -76,8 +76,8 @@ class ClusterTests: XCTestCase {
         let cluster = try driver.clusterHandle(0)
         for refid in refids {
             try cluster.reset(newId: nextClusterId)
-            let _ = try cluster.appendCite(refId: refid)
-            try cluster.appendCite(CRCite(refId: "ref-2", prefix: "{, and also}"))
+            let _ = try cluster.append(refId: refid)
+            try cluster.append(CRCite(refId: "ref-2", prefix: "{, and also}"))
             try driver.insertCluster(cluster)
             document.append(CRClusterPosition(id: nextClusterId, noteNumber: nil))
             nextClusterId += 1

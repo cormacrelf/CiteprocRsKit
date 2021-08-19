@@ -54,20 +54,18 @@ internal struct CRClusterPreviewPosition {
 
 /// A structure for describing a cluster to submit to citeproc-rs.
 /// * A cluster handle is created via `CRDriver.clusterHandle(id:)`
-/// * You then edit it using its methods.
+/// * You then append a bunch of `CRCite`s.
 /// * The completed handle is submitted to `CRDriver.insertCluster(_ cluster:)`
 /// * The handle can then be reused to submit more clusters, by resetting it via `CRClusterHandle.reset(newId:)`
 public class CRClusterHandle {
     internal init(driverRef: CRDriver, pointer: OpaquePointer, id: CRClusterId) {
         self.clusterRaw = pointer
-        self.citeLifetime = CRCiteLifetime(clusterPointer: pointer)
         self.id = id
         self.driverRef = driverRef
     }
     
     public fileprivate(set) var id: CRClusterId
     fileprivate let clusterRaw: OpaquePointer
-    fileprivate var citeLifetime: CRCiteLifetime
     weak var driverRef: CRDriver?
     
     /// Create a cluster handle, either uninitialised or initialised with a specific cluster ID.
@@ -88,8 +86,6 @@ public class CRClusterHandle {
     
     /// CRClusterHandle is reusable. This clears the storage but keeps the allocations used for transferring data over FFI.
     private func _reset(_ newId: CRClusterId) throws {
-        // invalidate all the cite handles
-        self.citeLifetime = CRCiteLifetime(clusterPointer: self.clusterRaw)
         self.id = newId
         let code = citeproc_rs_cluster_reset(cluster: self.clusterRaw, new_id: newId)
         try CRError.maybe_throw(returned: code)
@@ -166,44 +162,37 @@ extension CRClusterHandle {
                 throw CRError.last_or_default()
             }
             let index = UInt(idx)
-            return CRCiteHandle(index: index, lifetime: self.citeLifetime)
+            return CRCiteHandle(index: index, clusterRaw: self.clusterRaw)
         })
     }
     
+    public func append<S>(contentsOf cites: S) throws where S: Sequence, S.Element == CRCite {
+        try cites.forEach({ cite in try self.append(cite)})
+    }
+    
     /// Append a new, simple cite to the cluster. No affixes or locator.
-    public func appendCite(refId: String) throws {
+    public func append(refId: String) throws {
         let _ = try self.newCite(refId: refId)
     }
     
     /// Append a new cite to the cluster.
-    public func appendCite(_ citeData: CRCite) throws {
-        let handle = try self.newCite(refId: citeData.refId)
-        if let p = citeData.prefix  { try handle.setPrefix(p) }
-        if let s = citeData.suffix  { try handle.setSuffix(s) }
-        if let (l, t) = citeData.locator { try handle.setLocator(l, locType: t) }
+    public func append(_ cite: CRCite) throws {
+        let handle = try self.newCite(refId: cite.refId)
+        if let p = cite.prefix  { try handle.setPrefix(p) }
+        if let s = cite.suffix  { try handle.setSuffix(s) }
+        if let (l, t) = cite.locator { try handle.setLocator(l, locType: t) }
     }
-}
-
-private class CRCiteLifetime {
-    internal init(clusterPointer: OpaquePointer) {
-        self.clusterRaw = clusterPointer
-    }
-    
-    let clusterRaw: OpaquePointer
 }
 
 fileprivate struct CRCiteHandle {
     fileprivate let index: UInt
-    fileprivate weak var lifetime: CRCiteLifetime?
+    fileprivate var clusterRaw: OpaquePointer
 }
 
 extension CRCiteHandle {
     /// sets the cite prefix
     fileprivate func setPrefix(_ prefix: String) throws {
         var prefix = prefix
-        guard let clusterRaw = self.lifetime?.clusterRaw else {
-            throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
-        }
         try prefix.withUTF8Rust({ pfx, pfxLen in
             let code = citeproc_rs_cluster_cite_set_prefix(cluster: clusterRaw, cite_index: self.index, prefix: pfx, prefix_len: pfxLen)
             try CRError.maybe_throw(returned: code)
@@ -213,9 +202,6 @@ extension CRCiteHandle {
     /// sets the cite suffix
     fileprivate func setSuffix(_ suffix: String) throws {
         var suffix = suffix
-        guard let clusterRaw = self.lifetime?.clusterRaw else {
-            throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
-        }
         try suffix.withUTF8Rust({ sfx, sfxLen in
             let code = citeproc_rs_cluster_cite_set_suffix(cluster: clusterRaw, cite_index: self.index, suffix: sfx, suffix_len: sfxLen)
             try CRError.maybe_throw(returned: code)
@@ -225,9 +211,6 @@ extension CRCiteHandle {
     /// sets the reference pointed to by this cite
     fileprivate func setRefId(_ refId: String) throws {
         var refId = refId
-        guard let clusterRaw = self.lifetime?.clusterRaw else {
-            throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
-        }
         try refId.withUTF8Rust({ r, rLen in
             let code = citeproc_rs_cluster_cite_set_ref(cluster: clusterRaw, cite_index: self.index, ref_id: r, ref_id_len: rLen)
             try CRError.maybe_throw(returned: code)
@@ -237,9 +220,6 @@ extension CRCiteHandle {
     /// sets the locator for this cite
     fileprivate func setLocator(_ locator: String, locType: CRLocatorType) throws {
         var locator = locator
-        guard let clusterRaw = self.lifetime?.clusterRaw else {
-            throw CRError(CRErrorCode.nullPointer, "attempted to use cite handle after cluster had been cleared")
-        }
         try locator.withUTF8Rust({ r, rLen in
             let code = citeproc_rs_cluster_cite_set_locator(cluster: clusterRaw, cite_index: self.index, locator: r, locator_len: rLen, loc_type: locType)
             try CRError.maybe_throw(returned: code)
