@@ -131,6 +131,7 @@ public class CROSLogger: CRLog {
     }
 }
 
+@available(macOS 10.12, iOS 10, macCatalyst 13, *)
 extension CRLogLevel {
     /// A reasonable conversion from the Rust `log` crate's level to `os.OSLogType` levels.
     public func osLogType() -> OSLogType {
