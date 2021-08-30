@@ -74,7 +74,7 @@ build() {
   # `zip -y` is the key here, it preserves the Versions/Current (etc) symlinks inside the frameworks.
   # These otherwise cause `unzip` to fail and SwiftPM to give you "TSCBasic.StringError error 1".
   (cd Carthage/Build \
-  && rm CiteprocRsKit.xcframework.zip \
+  && rm -f CiteprocRsKit.xcframework.zip \
   && zip -y -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework)
 }
 
@@ -155,11 +155,11 @@ fi
 CHECKSUM=$(checksum)
 
 if $IS_DRAFT; then
-  gh release delete "$RELEASE_TAG"
-  git push origin ":$TAG"
-  git tag -d "$TAG"
+  gh release delete "$RELEASE_TAG" || echo "no draft release to delete; continuing"
+  git push origin ":$TAG" || echo "no tag $DRAFT_TAG_999 on remote"
+  git tag -d "$TAG" || echo "no tag $DRAFT_TAG_999 locally"
   git tag -m 'draft/test release' "$TAG"
-  git push "$TAG"
+  git push origin "$TAG"
   RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
   upload "$RELEASE_TAG"
 elif $EXR; then
