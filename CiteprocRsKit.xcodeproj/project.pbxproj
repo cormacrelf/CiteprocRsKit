@@ -24,6 +24,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		8518340526DF7D6600F7A1DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 850B71D026085A0200EB37D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8518340126DF7D3000F7A1DE;
+			remoteInfo = CiteprocRs;
+		};
 		851A4945260AD10B00AD1322 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 850B71D026085A0200EB37D0 /* Project object */;
@@ -31,16 +38,10 @@
 			remoteGlobalIDString = 851A493A260AD10B00AD1322;
 			remoteInfo = CiteprocRsKit;
 		};
-		85A2F41E260AE1DC00B8DCE6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 850B71D026085A0200EB37D0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 85A2F410260AE08400B8DCE6;
-			remoteInfo = "cargo-build-x";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8518340026DF7D0B00F7A1DE /* CiteprocRs.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CiteprocRs.xcframework; path = "citeproc-rs/target/xcframework/CiteprocRs.xcframework"; sourceTree = "<group>"; };
 		851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CiteprocRsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiteprocRsKitTests.swift; sourceTree = "<group>"; };
 		851A494A260AD10B00AD1322 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 		850B71CF26085A0200EB37D0 = {
 			isa = PBXGroup;
 			children = (
+				8518340026DF7D0B00F7A1DE /* CiteprocRs.xcframework */,
 				856B441926086D410088EBFC /* Scripts */,
 				851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */,
 				851A493C260AD10B00AD1322 /* CiteprocRsKit */,
@@ -141,6 +143,20 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXLegacyTarget section */
+		8518340126DF7D3000F7A1DE /* CiteprocRs */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 8518340226DF7D3000F7A1DE /* Build configuration list for PBXLegacyTarget "CiteprocRs" */;
+			buildPhases = (
+			);
+			buildToolPath = Scripts/xcframework;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = CiteprocRs;
+			passBuildSettingsInEnvironment = 0;
+			productName = CiteprocRs;
+		};
 		85A2F410260AE08400B8DCE6 /* libciteproc_rs */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "bash \"$PROJECT_DIR/Scripts/cargo-build\"";
@@ -170,7 +186,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				85A2F41F260AE1DC00B8DCE6 /* PBXTargetDependency */,
+				8518340626DF7D6600F7A1DE /* PBXTargetDependency */,
 			);
 			name = CiteprocRsKit;
 			productName = CiteprocRsKit;
@@ -204,6 +220,9 @@
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					8518340126DF7D3000F7A1DE = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					851A493A260AD10B00AD1322 = {
 						CreatedOnToolsVersion = 12.4;
 						LastSwiftMigration = 1240;
@@ -232,6 +251,7 @@
 				851A493A260AD10B00AD1322 /* CiteprocRsKit */,
 				851A4942260AD10B00AD1322 /* CiteprocRsKitTests */,
 				85A2F410260AE08400B8DCE6 /* libciteproc_rs */,
+				8518340126DF7D3000F7A1DE /* CiteprocRs */,
 			);
 		};
 /* End PBXProject section */
@@ -284,15 +304,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8518340626DF7D6600F7A1DE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8518340126DF7D3000F7A1DE /* CiteprocRs */;
+			targetProxy = 8518340526DF7D6600F7A1DE /* PBXContainerItemProxy */;
+		};
 		851A4946260AD10B00AD1322 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 851A493A260AD10B00AD1322 /* CiteprocRsKit */;
 			targetProxy = 851A4945260AD10B00AD1322 /* PBXContainerItemProxy */;
-		};
-		85A2F41F260AE1DC00B8DCE6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 85A2F410260AE08400B8DCE6 /* libciteproc_rs */;
-			targetProxy = 85A2F41E260AE1DC00B8DCE6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -405,6 +425,36 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8518340326DF7D3000F7A1DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8518340426DF7D3000F7A1DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -537,6 +587,15 @@
 			buildConfigurations = (
 				850B71DD26085A0200EB37D0 /* Debug */,
 				850B71DE26085A0200EB37D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8518340226DF7D3000F7A1DE /* Build configuration list for PBXLegacyTarget "CiteprocRs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8518340326DF7D3000F7A1DE /* Debug */,
+				8518340426DF7D3000F7A1DE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

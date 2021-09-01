@@ -20,8 +20,8 @@ SUPPORTED_PLATFORMS = iphonesimulator iphoneos macosx
 // {aarch64,x86_64}-apple-ios targets with custom LLVM target triples. This is all in the name of avoiding
 // a bunch of linker or xcframework creation errors where the static libraries have bad versions embedded
 // in the Mach-O load directives. This is only a problem for iphoneos/iphonesimulator.
-IPHONEOS_DEPLOYMENT_TARGET = 11.0
-MACOSX_DEPLOYMENT_TARGET = 10.13
+IPHONEOS_DEPLOYMENT_TARGET = 13.0
+MACOSX_DEPLOYMENT_TARGET = 10.9
 
 // Because we set important env variables in this file,
 // make sure the external build tool target gets this xcconfig.

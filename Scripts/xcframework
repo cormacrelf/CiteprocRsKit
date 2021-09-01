@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+CARGO_TARGET_DIR="citeproc-rs/target"
+WORK_DIR="citeproc-rs/bindings/xcframework"
+
+source Scripts/environment
+
+cd $WORK_DIR
+
+export CONFIGURATION=test
+./build.sh

@@ -5,6 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "CiteprocRsKit",
+    platforms: [
+        .macOS("10.9"),
+        .iOS("13.0")
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -20,7 +24,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .binaryTarget(
             name: "CiteprocRs",
-            path: "citeproc-rs/target/xcodeframework/CiteprocRs.xcframework"
+            path: "citeproc-rs/target/xcframework/CiteprocRs.xcframework"
         ),
         .target(
             name: "CiteprocRsKit",
