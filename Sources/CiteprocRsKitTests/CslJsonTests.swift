@@ -14,7 +14,7 @@ final class CslJsonTests: XCTestCase {
     var encoder: JSONEncoder = JSONEncoder()
     override func setUp() {
         // for reliable tests
-        encoder.outputFormatting = .sortedKeys
+        encoder.outputFormatting = .prettyPrinted.union(.sortedKeys)
     }
     func testStringVariable() throws {
         let variable: CslVariable = .string("hello");
@@ -24,16 +24,23 @@ final class CslJsonTests: XCTestCase {
     func testNameVariable() throws {
         let variable: CslVariable = .names([CslName(family: "Smith", given: "John")]);
         let result = try encoder.encode(variable)
-        XCTAssertEqual(String(data: result, encoding: .utf8), """
-            [{"family":"Smith","given":"John"}]
+        XCTAssertEqual(String(data: result, encoding: .utf8)!, """
+            [
+              {
+                "family" : "Smith",
+                "given" : "John"
+              }
+            ]
             """)
     }
     
     func testTitles() throws {
         let variable: CslVariable = .title(.object(.init(full: "Main Title: Subtitle")))
         let result = try encoder.encode(variable)
-        XCTAssertEqual(String(data: result, encoding: .utf8), """
-            {"full":"Main Title: Subtitle"}
+        XCTAssertEqual(String(data: result, encoding: .utf8)!, """
+            {
+              "full" : "Main Title: Subtitle"
+            }
             """)
     }
 
@@ -45,8 +52,20 @@ final class CslJsonTests: XCTestCase {
             "title": .string("Title"),
         ])
         let result = try encoder.encode(reference)
-        XCTAssertEqual(String(data: result, encoding: .utf8), """
-            {"author":[{"family":"Smith","given":"John"}],"id":"id","issued":"2021","title":"Title","type":"book","version":2}
+        XCTAssertEqual(String(data: result, encoding: .utf8)!, """
+            {
+              "author" : [
+                {
+                  "family" : "Smith",
+                  "given" : "John"
+                }
+              ],
+              "id" : "id",
+              "issued" : "2021",
+              "title" : "Title",
+              "type" : "book",
+              "version" : 2
+            }
             """)
     }
     
