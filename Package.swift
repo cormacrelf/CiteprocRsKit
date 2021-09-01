@@ -28,13 +28,11 @@ let package = Package(
         ),
         .target(
             name: "CiteprocRsKit",
-            dependencies: ["CiteprocRs"],
-            path: "CiteprocRsKit"
+            dependencies: ["CiteprocRs"]
             ),
         .testTarget(
             name: "CiteprocRsKitTests",
-            dependencies: ["CiteprocRsKit"],
-            path: "CiteprocRsKitTests"
+            dependencies: ["CiteprocRsKit"]
         ),
     ]
 )

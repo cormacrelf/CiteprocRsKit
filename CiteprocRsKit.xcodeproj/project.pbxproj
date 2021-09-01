@@ -88,13 +88,21 @@
 		850B71CF26085A0200EB37D0 = {
 			isa = PBXGroup;
 			children = (
+				8518340726DF827C00F7A1DE /* Sources */,
 				8518340026DF7D0B00F7A1DE /* CiteprocRs.xcframework */,
 				856B441926086D410088EBFC /* Scripts */,
 				851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */,
-				851A493C260AD10B00AD1322 /* CiteprocRsKit */,
-				851A4947260AD10B00AD1322 /* CiteprocRsKitTests */,
 				851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */,
 			);
+			sourceTree = "<group>";
+		};
+		8518340726DF827C00F7A1DE /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				851A493C260AD10B00AD1322 /* CiteprocRsKit */,
+				851A4947260AD10B00AD1322 /* CiteprocRsKitTests */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		851A493C260AD10B00AD1322 /* CiteprocRsKit */ = {
@@ -469,7 +477,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = CiteprocRsKit/Info.plist;
+				INFOPLIST_FILE = Sources/CiteprocRsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -498,7 +506,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = CiteprocRsKit/Info.plist;
+				INFOPLIST_FILE = Sources/CiteprocRsKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -524,7 +532,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = CiteprocRsKitTests/Info.plist;
+				INFOPLIST_FILE = Sources/CiteprocRsKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -545,7 +553,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = CiteprocRsKitTests/Info.plist;
+				INFOPLIST_FILE = Sources/CiteprocRsKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
