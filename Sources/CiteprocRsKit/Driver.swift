@@ -30,6 +30,7 @@ public class CRDriver {
     private let fetch_ctx: FFIUserData<FetchContext>
     internal var buffer: UTF8Buffer
     private let outputFormat: CROutputFormat
+    private let jsonEncoder: JSONEncoder = JSONEncoder()
 
     private init(raw: OpaquePointer, fetch_ctx: FFIUserData<FetchContext>, outputFormat: CROutputFormat) {
         self.raw = raw
@@ -88,7 +89,7 @@ extension CRDriver {
     
     /// Shows what a reference would look like if rendered in a bibliography. The reference must have an `"id"` field but it will not be used.
     public func previewReference<R: Encodable>(_ reference: R, format: CROutputFormat? = nil) throws -> String {
-        let json: Data = try JSONEncoder().encode(reference)
+        let json: Data = try self.jsonEncoder.encode(reference)
         return try self.previewReference(json: json, format: format)
     }
 
@@ -107,8 +108,7 @@ extension CRDriver {
 
     /// Add a Reference to the Driver.
     public func insertReference<R: Encodable>(_ reference: R) throws {
-        let encoder = JSONEncoder()
-        let json: Data = try encoder.encode(reference)
+        let json: Data = try self.jsonEncoder.encode(reference)
         return try self.insertReference(json: json)
     }
 
