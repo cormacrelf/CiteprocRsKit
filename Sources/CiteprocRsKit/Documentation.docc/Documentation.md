@@ -50,3 +50,15 @@ CiteprocRsKit is capable of forwarding all of `citeproc-rs`' logs to the destina
 - ``CROSLogger``
 - ``CRLogLevel``
 - ``CRLevelFilter``
+
+### References
+
+To pass reference data into ``CRDriver``, you can use either raw JSON `Data` or any kind of `Encodable`
+value that produces CSL-JSON. For convenience a set of types that do that is provided.
+
+- ``CslReference``
+- ``CslVariable``
+- ``CslName``
+- ``CslDate``
+- ``CslTitle``
+- ``NumString``

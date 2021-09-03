@@ -18,8 +18,7 @@
 		853851B926C1704600EDBDE0 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853851B826C1704600EDBDE0 /* LoggerTests.swift */; };
 		854805C026B86814000E2E55 /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854805BF26B86814000E2E55 /* Cluster.swift */; };
 		854CF4A626CAD5EE00363E4B /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = 854CF4A526CAD5EE00363E4B /* Documentation.docc */; };
-		8552F5FB26E261B800F54483 /* CiteprocRs.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8552F5F926E2618700F54483 /* CiteprocRs.xcframework */; };
-		8552F5FC26E261B800F54483 /* CiteprocRs.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8552F5F926E2618700F54483 /* CiteprocRs.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8552F5FB26E261B800F54483 /* CiteprocRs.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8552F5F926E2618700F54483 /* CiteprocRs.xcframework */; settings = {ATTRIBUTES = (Required, ); }; };
 		857D733C26B1320100C34654 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857D733B26B1320100C34654 /* Buffer.swift */; };
 		8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29926B7F26F007FF5AB /* ClusterTests.swift */; };
 		8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29B26B80563007FF5AB /* PanicTests.swift */; };
@@ -43,20 +42,6 @@
 			remoteInfo = CiteprocRsKit;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		8552F5FD26E261B800F54483 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				8552F5FC26E261B800F54483 /* CiteprocRs.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CiteprocRsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -229,7 +214,6 @@
 				851A4937260AD10B00AD1322 /* Sources */,
 				851A4938260AD10B00AD1322 /* Frameworks */,
 				851A4939260AD10B00AD1322 /* Resources */,
-				8552F5FD26E261B800F54483 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

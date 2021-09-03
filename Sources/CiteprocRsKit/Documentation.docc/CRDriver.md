@@ -19,8 +19,10 @@ Here, they are Swift objects that can be converted to JSON that matches the sche
 
 [csl-data]: https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
 
-- ``CRDriver/previewReference(_:format:)``
-- ``CRDriver/insertReference(_:)``
+- ``previewReference(_:format:)``
+- ``insertReference(_:)``
+- ``previewReference(json:format:)``
+- ``insertReference(json:)``
 
 ### Clusters
 

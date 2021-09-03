@@ -72,12 +72,13 @@ public struct CslReference: Encodable {
     }
 }
 
+/// An enum representing a single CSL variable.
 public enum CslVariable: Encodable {
-
     case string(String)
     case number(NumString)
     case names([CslName])
     case date(CslDate)
+    // Titles are special-cased in upcoming CSL-JSON 1.1. But you can also just use .string().
     case title(CslTitle)
 
     public func encode(to encoder: Encoder) throws {
