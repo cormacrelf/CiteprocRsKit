@@ -65,7 +65,7 @@ parse_params() {
 
 parse_params $@
 
-BUILD_RIR="$DIR/citeproc-rs/bindings/xcframework"
+BUILD_DIR="$DIR/citeproc-rs/bindings/xcframework"
 TARGET_DIR="$DIR/citeproc-rs/target/xcframework/release"
 
 build() {
