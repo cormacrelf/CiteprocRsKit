@@ -43,6 +43,7 @@ enum Environment {
             switch env {
                 case "draft": return .preBuiltDraft
                 case "local": return .localBinary
+                case "": return .default
                 default: throw EnvError(env: env)
             }
         } else {
