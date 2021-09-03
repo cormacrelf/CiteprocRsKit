@@ -37,7 +37,6 @@ TAG=""
 PUSH_BINARY_REPO=false
 IS_DRAFT=false
 BINARY_BRANCH=master
-RELEASE_DRAFT_FLAG=""
 FORCE_PUSH_BINARY=""
 
 parse_params() {
@@ -66,24 +65,35 @@ parse_params() {
 
 parse_params $@
 
+BUILD_RIR="$DIR/citeproc-rs/bindings/xcframework"
+TARGET_DIR="$DIR/citeproc-rs/target/xcframework/release"
+
 build() {
   set -euo pipefail
-  rustup show
-  carthage build --use-xcframeworks --no-skip-current --verbose
+  (
+    cd "$BUILD_DIR"
+    env CONFIGURATION=release ./build.sh
+  )
+  # carthage build --use-xcframeworks --no-skip-current --verbose
   # see https://bugs.swift.org/browse/SR-14257, commment by @cormacrelf
   # `zip -y` is the key here, it preserves the Versions/Current (etc) symlinks inside the frameworks.
   # These otherwise cause `unzip` to fail and SwiftPM to give you "TSCBasic.StringError error 1".
-  (cd Carthage/Build \
-  && rm -f CiteprocRsKit.xcframework.zip \
-  && zip -y -r CiteprocRsKit.xcframework.zip CiteprocRsKit.xcframework)
+  (cd "$TARGET_DIR" \
+  && rm -f CiteprocRs.xcframework.zip \
+  && zip -y -r CiteprocRs.xcframework.zip CiteprocRs.xcframework)
+}
+
+upload() {
+  set +e
+  gh release upload "$1" "$TARGET_DIR/CiteprocRs.xcframework.zip"
 }
 
 checksum () {
   set +e
   # SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
-  cd Carthage/Build
-  touch Package.swift 
-  local CHECKSUM=$(swift package compute-checksum CiteprocRsKit.xcframework.zip)
+  cd "$TARGET_DIR"
+  touch Package.swift
+  local CHECKSUM=$(swift package compute-checksum CiteprocRs.xcframework.zip)
   rm Package.swift
   echo $CHECKSUM
 }
@@ -108,8 +118,8 @@ push_binary_repo() {
   fi
 
   cd "$TMP"
-  git clone https://github.com/cormacrelf/CiteprocRsKit-Binary.git --branch master
-  cd CiteprocRsKit-Binary
+  git clone https://github.com/citeproc-rs/ffi-xcframework.git --branch master
+  cd ffi-xcframework
   # https://stackoverflow.com/a/26961416
   git switch -c $BINARY_BRANCH
   cp -R "$DIR"/Scripts/BinaryPackage/* .
@@ -119,18 +129,13 @@ push_binary_repo() {
     < "$DIR/Scripts/BinaryPackage/Package.swift" \
     > "./Package.swift"
   git add .
-  git commit -m "release $TAG from $RELEASE_SHA" \
+  git commit -m "release $TAG for $RELEASE_SHA" \
              -m "https://github.com/cormacrelf/CiteprocRsKit/releases/tag/$TAG"
-  git tag -f -a -m "release $TAG from $RELEASE_SHA" $TAG
+  git tag -f -a -m "release $TAG for $RELEASE_SHA" $TAG
   echo $(pwd)
   git push $FORCE_PUSH_BINARY origin $BINARY_BRANCH
   git push --force --tags
   cd "$DIR"
-}
-
-upload() {
-  set +e
-  gh release upload "$1" Carthage/Build/CiteprocRsKit.xcframework.zip
 }
 
 edit_release() {
@@ -154,21 +159,23 @@ fi
 
 CHECKSUM=$(checksum)
 
-if $IS_DRAFT; then
-  gh release delete "$RELEASE_TAG" || echo "no draft release to delete; continuing"
-  git push origin ":$TAG" || echo "no tag $DRAFT_TAG_999 on remote"
-  git tag -d "$TAG" || echo "no tag $DRAFT_TAG_999 locally"
-  git tag -m 'draft/test release' "$TAG"
-  git push origin "$TAG"
-  RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
-  upload "$RELEASE_TAG"
-elif $EXR; then
-  RELEASE_TAG="$EXISTING_RELEASE"
-  upload "$RELEASE_TAG"
-  edit_release "$RELEASE_TAG" "$CHECKSUM"
-elif $RELEASE; then
-  RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
-  upload "$RELEASE_TAG"
+if $RELEASE; then
+  if $IS_DRAFT; then
+    gh release delete "$RELEASE_TAG" || echo "no draft release to delete; continuing"
+    git push origin ":$TAG" || echo "no tag $DRAFT_TAG_999 on remote"
+    git tag -d "$TAG" || echo "no tag $DRAFT_TAG_999 locally"
+    git tag -m 'draft/test release' "$TAG"
+    git push origin "$TAG"
+    RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
+    upload "$RELEASE_TAG"
+  elif $EXR; then
+    RELEASE_TAG="$EXISTING_RELEASE"
+    upload "$RELEASE_TAG"
+    edit_release "$RELEASE_TAG" "$CHECKSUM"
+  else
+    RELEASE_TAG=$(gh release create "$TAG" -n "Checksum: $CHECKSUM" | xargs basename)
+    upload "$RELEASE_TAG"
+  fi
 fi
 
 if $PUSH_BINARY_REPO && ! [ -z "$TAG" ]; then
