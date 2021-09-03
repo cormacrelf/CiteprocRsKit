@@ -3,13 +3,26 @@
 
 import PackageDescription
 
-// https://gist.github.com/Sorix/21e61347f478ae2e83ef4d8a92d933af
+// To use the debug copy built by Scripts/xcframework
+//
+//     export CITEPROC_RS_BINARY=local
+//     swift test
+//
+// To test with a draft binary release:
+//
+//     Scripts/release --release --draft --push-binary-repo
+//     export CITEPROC_RS_BINARY=draft
+//     # (swift test will fail because the _test_* symbols are not available on release builds)
+//     swift build
+
 #if os(Linux)
 import Glibc
 #else
 import Darwin.C
 #endif
 
+
+// https://gist.github.com/Sorix/21e61347f478ae2e83ef4d8a92d933af
 enum Environment {
     static let `default`: Environment = .preBuiltRelease
 
@@ -55,7 +68,7 @@ let draftBranchPackage: Package.Dependency = .package(
 
 let localTarget: Target = .binaryTarget(
     name: "CiteprocRs",
-    path: "citeproc-rs/target/xcframework/CiteprocRs.xcframework"
+    path: "citeproc-rs/target/xcframework/debug/CiteprocRs.xcframework"
 )
 
 var dependencies: [Package.Dependency] = [
