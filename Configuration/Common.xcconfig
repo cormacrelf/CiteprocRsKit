@@ -21,7 +21,7 @@ SUPPORTED_PLATFORMS = iphonesimulator iphoneos macosx
 // a bunch of linker or xcframework creation errors where the static libraries have bad versions embedded
 // in the Mach-O load directives. This is only a problem for iphoneos/iphonesimulator.
 IPHONEOS_DEPLOYMENT_TARGET = 13.0
-MACOSX_DEPLOYMENT_TARGET = 10.9
+MACOSX_DEPLOYMENT_TARGET = 10.10
 
 // Because we set important env variables in this file,
 // make sure the external build tool target gets this xcconfig.
