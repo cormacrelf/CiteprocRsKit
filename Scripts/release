@@ -105,7 +105,7 @@ push_binary_repo() {
   local TMP="$(mktemp -d)"
   trap "rm -rf -- $TMP" EXIT
 
-  local DL=$(gh api "/repos/cormacrelf/CiteprocRsKit/releases/tags/$RELEASE_TAG" -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+  local DL=$(gh api "/repos/cormacrelf/CiteprocRsKit/releases/tags/$RELEASE_TAG" -q '.assets[] | select(.name == "CiteprocRs.xcframework.zip") | .browser_download_url')
   # could dereference this locally, but this makes sure we pushed it somewhere
   local RELEASE_SHA=$(gh api /repos/cormacrelf/CiteprocRsKit/commits/$TAG -q '.sha')
 
@@ -143,7 +143,7 @@ edit_release() {
   local CHECKSUM="$2"
   local RELEASE=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.url')
   local BODY=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.body')
-  local DL=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.assets[] | select(.name == "CiteprocRsKit.xcframework.zip") | .browser_download_url')
+  local DL=$(gh api /repos/cormacrelf/CiteprocRsKit/releases/tags/$TAG -q '.assets[] | select(.name == "CiteprocRs.xcframework.zip") | .browser_download_url')
   if ! (echo $BODY | grep -q $CHECKSUM); then
     echo "patching body"
     gh api -X PATCH $RELEASE -f "body=$BODY\n\nChecksum: $CHECKSUM"
@@ -151,7 +151,7 @@ edit_release() {
   echo $DL
 }
 
-if $SKIP_BUILD && [[ -f Carthage/Build/CiteprocRsKit.xcframework.zip ]]; then
+if $SKIP_BUILD && [[ -f "$TARGET_DIR/CiteprocRs.xcframework.zip" ]]; then
   echo -n
 else
   build

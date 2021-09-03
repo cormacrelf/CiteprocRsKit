@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "CiteprocRsKit",
+    name: "CiteprocRs",
     products: [
         .library(
             name: "CiteprocRs",
