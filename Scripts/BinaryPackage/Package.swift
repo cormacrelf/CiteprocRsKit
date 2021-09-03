@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "CiteprocRsKit",
+    name: "CiteprocRs",
     products: [
         .library(
-            name: "CiteprocRsKit",
-            targets: ["CiteprocRsKit"]),
+            name: "CiteprocRs",
+            targets: ["CiteprocRs"]),
     ],
     targets: [
         .binaryTarget(
-            name: "CiteprocRsKit",
+            name: "CiteprocRs",
             url: "XCFRAMEWORK_ZIP_URL",
             checksum: "XCFRAMEWORK_ZIP_CHECKSUM"
         ),
