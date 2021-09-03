@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,9 +18,13 @@
 		853851B926C1704600EDBDE0 /* LoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853851B826C1704600EDBDE0 /* LoggerTests.swift */; };
 		854805C026B86814000E2E55 /* Cluster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854805BF26B86814000E2E55 /* Cluster.swift */; };
 		854CF4A626CAD5EE00363E4B /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = 854CF4A526CAD5EE00363E4B /* Documentation.docc */; };
+		8552F5FB26E261B800F54483 /* CiteprocRs.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8552F5F926E2618700F54483 /* CiteprocRs.xcframework */; };
+		8552F5FC26E261B800F54483 /* CiteprocRs.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8552F5F926E2618700F54483 /* CiteprocRs.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		857D733C26B1320100C34654 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857D733B26B1320100C34654 /* Buffer.swift */; };
 		8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29926B7F26F007FF5AB /* ClusterTests.swift */; };
 		8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8583B29B26B80563007FF5AB /* PanicTests.swift */; };
+		8593921E26DDFE1000540770 /* CslJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8593921D26DDFE1000540770 /* CslJson.swift */; };
+		8593922026DDFED200540770 /* CslJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8593921F26DDFED200540770 /* CslJsonTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,15 +44,27 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8552F5FD26E261B800F54483 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8552F5FC26E261B800F54483 /* CiteprocRs.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		8518340826DF8C4900F7A1DE /* CiteprocRs.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CiteprocRs.xcframework; path = "citeproc-rs/target/xcframework/debug/CiteprocRs.xcframework"; sourceTree = "<group>"; };
 		851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CiteprocRsKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		851A4948260AD10B00AD1322 /* CiteprocRsKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CiteprocRsKitTests.swift; sourceTree = "<group>"; };
 		851A494A260AD10B00AD1322 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		851A4954260AD12300AD1322 /* Driver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Driver.swift; sourceTree = "<group>"; };
 		851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CiteprocRsKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		851A495F260AD3EE00AD1322 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		851F28B226E209210010D76E /* Configuration */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Configuration; sourceTree = "<group>"; };
 		852DD4AD26B15497002AED8D /* FetchContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchContext.swift; sourceTree = "<group>"; };
 		852DD4AF26B154BC002AED8D /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		852DD4B126B3E410002AED8D /* FFIUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFIUserData.swift; sourceTree = "<group>"; };
@@ -57,10 +73,17 @@
 		853851B826C1704600EDBDE0 /* LoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerTests.swift; sourceTree = "<group>"; };
 		854805BF26B86814000E2E55 /* Cluster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cluster.swift; sourceTree = "<group>"; };
 		854CF4A526CAD5EE00363E4B /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
+		8552F5F526E2611D00F54483 /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		8552F5F626E2611D00F54483 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		8552F5F726E2611D00F54483 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		8552F5F826E2611D00F54483 /* Link-citeproc-rs.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Link-citeproc-rs.xcconfig"; sourceTree = "<group>"; };
+		8552F5F926E2618700F54483 /* CiteprocRs.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CiteprocRs.xcframework; path = "citeproc-rs/target/xcframework/debug/CiteprocRs.xcframework"; sourceTree = "<group>"; };
 		856B441926086D410088EBFC /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		857D733B26B1320100C34654 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
 		8583B29926B7F26F007FF5AB /* ClusterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterTests.swift; sourceTree = "<group>"; };
 		8583B29B26B80563007FF5AB /* PanicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanicTests.swift; sourceTree = "<group>"; };
+		8593921D26DDFE1000540770 /* CslJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CslJson.swift; sourceTree = "<group>"; };
+		8593921F26DDFED200540770 /* CslJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CslJsonTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8552F5FB26E261B800F54483 /* CiteprocRs.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,12 +109,13 @@
 		850B71CF26085A0200EB37D0 = {
 			isa = PBXGroup;
 			children = (
-				851F28B226E209210010D76E /* Configuration */,
-				8518340826DF8C4900F7A1DE /* CiteprocRs.xcframework */,
+				8552F5F926E2618700F54483 /* CiteprocRs.xcframework */,
+				8552F5F426E2611D00F54483 /* Configuration */,
 				8518340726DF827C00F7A1DE /* Sources */,
 				856B441926086D410088EBFC /* Scripts */,
 				851A493B260AD10B00AD1322 /* CiteprocRsKit.framework */,
 				851A495A260AD31D00AD1322 /* CiteprocRsKitTests.xctest */,
+				8552F5FA26E261B800F54483 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -106,6 +131,7 @@
 		851A493C260AD10B00AD1322 /* CiteprocRsKit */ = {
 			isa = PBXGroup;
 			children = (
+				8593921D26DDFE1000540770 /* CslJson.swift */,
 				851A495F260AD3EE00AD1322 /* Info.plist */,
 				851A4954260AD12300AD1322 /* Driver.swift */,
 				854805BF26B86814000E2E55 /* Cluster.swift */,
@@ -128,8 +154,27 @@
 				8583B29B26B80563007FF5AB /* PanicTests.swift */,
 				851A494A260AD10B00AD1322 /* Info.plist */,
 				853851B826C1704600EDBDE0 /* LoggerTests.swift */,
+				8593921F26DDFED200540770 /* CslJsonTests.swift */,
 			);
 			path = CiteprocRsKitTests;
+			sourceTree = "<group>";
+		};
+		8552F5F426E2611D00F54483 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				8552F5F526E2611D00F54483 /* Common.xcconfig */,
+				8552F5F626E2611D00F54483 /* Debug.xcconfig */,
+				8552F5F726E2611D00F54483 /* Release.xcconfig */,
+				8552F5F826E2611D00F54483 /* Link-citeproc-rs.xcconfig */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		8552F5FA26E261B800F54483 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,6 +229,7 @@
 				851A4937260AD10B00AD1322 /* Sources */,
 				851A4938260AD10B00AD1322 /* Frameworks */,
 				851A4939260AD10B00AD1322 /* Resources */,
+				8552F5FD26E261B800F54483 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -288,6 +334,7 @@
 				853851B726C16AF400EDBDE0 /* Logger.swift in Sources */,
 				852DD4AE26B15497002AED8D /* FetchContext.swift in Sources */,
 				852DD4B226B3E410002AED8D /* FFIUserData.swift in Sources */,
+				8593921E26DDFE1000540770 /* CslJson.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +346,7 @@
 				8583B29A26B7F26F007FF5AB /* ClusterTests.swift in Sources */,
 				8583B29C26B80563007FF5AB /* PanicTests.swift in Sources */,
 				852DD4B426B3E733002AED8D /* MemoryTests.swift in Sources */,
+				8593922026DDFED200540770 /* CslJsonTests.swift in Sources */,
 				851A4949260AD10B00AD1322 /* CiteprocRsKitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,6 +369,7 @@
 /* Begin XCBuildConfiguration section */
 		850B71DD26085A0200EB37D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8552F5F626E2611D00F54483 /* Debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -378,6 +427,7 @@
 		};
 		850B71DE26085A0200EB37D0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8552F5F726E2611D00F54483 /* Release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

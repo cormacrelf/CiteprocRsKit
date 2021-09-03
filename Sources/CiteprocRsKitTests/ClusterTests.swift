@@ -64,12 +64,22 @@ class ClusterTests: XCTestCase {
         var document: [CRClusterPosition] = []
         var refids: [String] = []
         let references = [
-            ["id": "ref-1", "type": "book", "title": "A Flight of Sparrows", "author": [["given": "John", "family": "Smith"]] ],
-            ["id": "ref-2", "type": "book", "title": "Seminal works, and how to write them", "author": [["given": "John", "family": "Smith"]]]
+            CslReference(id: "ref-1", type: "book", variables: [
+                "title": .string("A Flight of Sparrows"),
+                "author": .names([
+                    CslName(family: "Smith", given: "John"),
+                ]),
+            ]),
+            CslReference(id: "ref-2", type: "book", variables: [
+                "title": .string("Seminal works, and how to write them"),
+                "author": .names([
+                    CslName(family: "Smith", given: "John"),
+                ]),
+            ]),
         ]
         for refr in references {
             try driver.insertReference(refr)
-            refids.append(refr["id"]! as! String)
+            refids.append(refr.id)
         }
         
         var nextClusterId = CRClusterId(0) // we'll reset the handle before we use the zero id

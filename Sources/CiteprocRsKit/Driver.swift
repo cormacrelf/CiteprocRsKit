@@ -30,6 +30,7 @@ public class CRDriver {
     private let fetch_ctx: FFIUserData<FetchContext>
     internal var buffer: UTF8Buffer
     private let outputFormat: CROutputFormat
+    private let jsonEncoder: JSONEncoder = JSONEncoder()
 
     private init(raw: OpaquePointer, fetch_ctx: FFIUserData<FetchContext>, outputFormat: CROutputFormat) {
         self.raw = raw
@@ -87,9 +88,14 @@ public class CRDriver {
 extension CRDriver {
     
     /// Shows what a reference would look like if rendered in a bibliography. The reference must have an `"id"` field but it will not be used.
-    public func previewReference(_ reference: Any, format: CROutputFormat? = nil) throws -> String {
-        let ref_json: Data = try JSONSerialization.data(withJSONObject: reference)
-        let code = ref_json.withCharPointerLen({ buf, bufLen in
+    public func previewReference<R: Encodable>(_ reference: R, format: CROutputFormat? = nil) throws -> String {
+        let json: Data = try self.jsonEncoder.encode(reference)
+        return try self.previewReference(json: json, format: format)
+    }
+
+    /// Where you have raw JSON already, you can pass it directly to the driver.
+    public func previewReference(json: Data, format: CROutputFormat? = nil) throws -> String {
+        let code = json.withCharPointerLen({ buf, bufLen in
             citeproc_rs_driver_preview_reference(
                 driver: self.raw,
                 ref_json: buf, ref_json_len: bufLen,
@@ -101,15 +107,20 @@ extension CRDriver {
     }
 
     /// Add a Reference to the Driver.
-    public func insertReference(_ reference: Any) throws {
-        let ref_json: Data = try JSONSerialization.data(withJSONObject: reference)
-        let code = ref_json.withCharPointerLen({ buf, buf_len in
+    public func insertReference<R: Encodable>(_ reference: R) throws {
+        let json: Data = try self.jsonEncoder.encode(reference)
+        return try self.insertReference(json: json)
+    }
+
+    /// Where you have raw JSON already, you can pass it directly to the driver.
+    public func insertReference(json: Data) throws {
+        let code = json.withCharPointerLen({ buf, buf_len in
             citeproc_rs_driver_insert_reference(
                 driver: self.raw, ref_json: buf, ref_json_len: buf_len)
         })
         try CRError.maybe_throw(returned: code)
     }
-    
+
     /// Concatenates all the bibliography entries into one string.
     public func formatBibliography() throws -> String {
         let code = CiteprocRs.citeproc_rs_driver_format_bibliography(driver: self.raw, user_buf: &self.buffer)

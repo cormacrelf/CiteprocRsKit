@@ -196,7 +196,7 @@ class CiteprocRsKitTests: XCTestCase {
         try driver.insertReference(["id": "refid", "type": "book", "title": "The title is here"])
         do {
             // missing required id field
-            try driver.insertReference([:])
+            try driver.insertReference(["type":"book"])
         } catch let e as CRError {
             print(e)
             XCTAssertEqual(e.code, CRErrorCode.serdeJson)
