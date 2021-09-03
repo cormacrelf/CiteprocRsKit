@@ -88,3 +88,8 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# This is ignored when a repo is used as a dependency anyway. 
+Package.resolved
+
+.DS_Store
