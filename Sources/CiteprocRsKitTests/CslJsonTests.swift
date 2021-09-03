@@ -48,17 +48,18 @@ final class CslJsonTests: XCTestCase {
             """)
     }
 
-    func testTitles() throws {
-        let variable: CslVariable = .title(.object(.init(full: "Main Title: Subtitle")))
-        let result = try encoder.encode(variable)
-        XCTAssertEqual(
-            String(data: result, encoding: .utf8)!,
-            """
-            {
-              "full" : "Main Title: Subtitle"
-            }
-            """)
-    }
+    // enable when supported
+    // func testTitles() throws {
+    //     let variable: CslVariable = .title(.object(.init(full: "Main Title: Subtitle")))
+    //     let result = try encoder.encode(variable)
+    //     XCTAssertEqual(
+    //         String(data: result, encoding: .utf8)!,
+    //         """
+    //         {
+    //           "full" : "Main Title: Subtitle"
+    //         }
+    //         """)
+    // }
 
     func testDateParts() throws {
         let variable: CslVariable = .date(.v1(.init(dateParts: [[2021, 2, 1]])))

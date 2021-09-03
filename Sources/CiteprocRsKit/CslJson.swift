@@ -78,7 +78,6 @@ public enum CslVariable: Encodable {
     case number(NumString)
     case names([CslName])
     case date(CslDate)
-    /// CSL 1.1
     case title(CslTitle)
 
     public func encode(to encoder: Encoder) throws {
@@ -210,9 +209,11 @@ public enum CslDate: Encodable {
 
 public enum CslTitle: Encodable {
     case string(String)
-    case object(TitleObject)
+    // enable when supported
+    // case object(TitleObject)
 
-    public struct TitleObject: Encodable {
+    /// Currently unused, as CSL 1.1-style title objects are not yet supported by citeproc-rs
+    internal struct TitleObject: Encodable {
         public init(
             full: String? = nil, main: String? = nil, sub: [String]? = nil, short: String? = nil
         ) {
@@ -231,7 +232,8 @@ public enum CslTitle: Encodable {
     public func encode(to encoder: Encoder) throws {
         switch self {
         case .string(let s): return try s.encode(to: encoder)
-        case .object(let o): return try o.encode(to: encoder)
+        // enable when supported
+        // case .object(let o): return try o.encode(to: encoder)
         }
     }
 }
