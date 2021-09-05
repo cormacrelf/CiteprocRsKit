@@ -4,7 +4,11 @@ A set of Swift bindings for
 [`citeproc-rs`](https://github.com/zotero/citeproc-rs).
 
 This is a SwiftPM package that has a dependency on a pre-built copy of
-`citeproc-rs`' FFI library.
+`citeproc-rs`' FFI library. Some bug fixes may occur only in the FFI library,
+of which new versions can be pulled with `swift package update`. See the
+[citeproc-rs/ffi-xcframework releases][xcf-releases] for news.
+
+[xcf-releases]: https://github.com/citeproc-rs/ffi-xcframework/releases
 
 ## Installation
 
