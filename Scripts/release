@@ -39,6 +39,20 @@ BINARY_BRANCH=master
 FORCE_PUSH_BINARY=""
 BINARY_PRERELEASE=""
 
+help() {
+  cat <<EOF
+$0: package and release libciteproc_rs.a into an xcframework for macOS, iOS and the iOS simulator
+    via github.com/$BINARY_REPO
+
+  --skip-build                 Skips building the xcframework, assumes it exists in the target directory
+  --binary-tag vX.X.X          Release with this tag => github.com/$BINARY_REPO/releases/tags/vX.X.X
+  --draft                      Make a prerelease with tag $DRAFT_TAG_999, usable with \`env CITEPROC_RS_BINARY=draft swift build\`
+  --cleanup-draft              Delete artifacts left by --draft
+  --help                       Show this help.
+EOF
+  exit
+}
+
 parse_params() {
   while [[ "$#" > 0 ]]; do case $1 in
     --skip-build) SKIP_BUILD=true; shift;;
@@ -47,7 +61,7 @@ parse_params() {
     --binary-tag) BINARY_TAG="$2"; shift 2;;
     --draft) IS_DRAFT=true; shift;;
     --cleanup-draft) IS_DRAFT=true; CLEANUP_DRAFT=true; shift;;
-    --|--help) bail "huh";;
+    --|--help) help;;
     *) bail "Unknown parameter passed: $1";;
   esac; done
   if $IS_DRAFT; then
